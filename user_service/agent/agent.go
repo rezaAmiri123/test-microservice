@@ -44,6 +44,7 @@ func NewAgent(config Config) (*Agent, error) {
 		//a.setupRepository,
 		a.setupApplication,
 		a.setupHttpServer,
+		a.setupValidator,
 		//a.setupGRPCServer,
 		//a.setupTracer,
 	}
