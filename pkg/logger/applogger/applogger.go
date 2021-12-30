@@ -27,7 +27,7 @@ type appLogger struct {
 }
 
 // NewAppLogger App Logger constructor
-func NewAppLogger(cfg *Config) logger.Logger {
+func NewAppLogger(cfg Config) logger.Logger {
 	return &appLogger{level: cfg.LogLevel, devMode: cfg.DevMode, encoding: cfg.Encoder}
 }
 
