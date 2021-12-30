@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  user_service:
+    container_name: user_service
+    build:
+      context: .
+      dockerfile: docker/user_service.Dockerfile
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./:/app
+    restart: always
+#    environment:
+#      - POSTGRES_HOST=host.docker.internal
+#      - POSTGRES_PORT=5432
+#      - REDIS_ADDR=host.docker.internal:6379
+#      - MONGO_URI=mongodb://host.docker.internal:27017
+#      - JAEGER_HOST=host.docker.internal:6831
+#      - KAFKA_BROKERS=host.docker.internal:9092
+    depends_on:
+      - microservices_mysql
+    networks: [ "microservices" ]
+
+  microservices_mysql:
+    image: mysql:5.7
+    container_name: microservices_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'go'
+      MYSQL_USER: 'go'
+      MYSQL_PASSWORD: 'go'
+      MYSQL_ROOT_PASSWORD: 'go'
+      MAX_ALLOWED_PACKET: '256M'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mongodb_data_container:/var/lib/mysql
+    networks: [ "microservices" ]
+
+#volumes:
+#  my-db:
+volumes:
+  mongodb_data_container:
+
+networks:
+  microservices:
+    name: microservices
