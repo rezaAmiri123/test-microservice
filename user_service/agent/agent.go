@@ -42,8 +42,8 @@ func NewAgent(config Config) (*Agent, error) {
 	setupsFn := []func() error{
 		a.setupLogger,
 		//a.setupRepository,
-		//a.setupApplication,
-		//a.setupHttpServer,
+		a.setupApplication,
+		a.setupHttpServer,
 		//a.setupGRPCServer,
 		//a.setupTracer,
 	}
