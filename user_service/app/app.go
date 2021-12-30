@@ -16,4 +16,5 @@ type Commands struct {
 
 type Queries struct {
 	GetProfile query.GetProfileHandler
+	GetUserToken query.GetUserTokenHandler
 }
