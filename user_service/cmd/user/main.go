@@ -37,8 +37,8 @@ type cfg struct {
 
 func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("config-file", "", "path to config file.")
-	cmd.Flags().String("http-server-addr", "localhost", "http server address.")
-	cmd.Flags().Int("http-server-port", 8090, "http server port.")
+	cmd.Flags().String("http-server-addr", "", "http server address.")
+	cmd.Flags().Int("http-server-port", 8080, "http server port.")
 	cmd.Flags().String("auth-server-addr", "localhost", "auth server address.")
 	cmd.Flags().Int("auth-server-port", 8081, "auth server port.")
 	//cmd.Flags().String("grpc-server-addr", "localhost", "grpc server address.")
@@ -47,7 +47,7 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("database-name", "go", "database name.")
 	cmd.Flags().String("database-username", "go", "database username.")
 	cmd.Flags().String("database-password", "go", "database password.")
-	cmd.Flags().String("database-host", "localhost", "database host address.")
+	cmd.Flags().String("database-host", "db.local", "database host address.")
 	cmd.Flags().String("database-port", "3306", "database host address.")
 
 	return viper.BindPFlags(cmd.Flags())

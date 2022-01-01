@@ -7,9 +7,11 @@ services:
       context: .
       dockerfile: docker/user_service.Dockerfile
     ports:
-      - "8090:8090"
-    volumes:
-      - ./:/app
+      - "8080:8080"
+    expose:
+      - '8080'
+#    volumes:
+#      - ./:/app
     restart: always
 #    environment:
 #      - POSTGRES_HOST=host.docker.internal
@@ -37,13 +39,14 @@ services:
     expose:
       - '3306'
     volumes:
-      - mongodb_data_container:/var/lib/mysql
+      - data_container:/var/lib/mysql
+    hostname: db.local
     networks: [ "microservices" ]
 
 #volumes:
 #  my-db:
 volumes:
-  mongodb_data_container:
+  data_container:
 
 networks:
   microservices:
