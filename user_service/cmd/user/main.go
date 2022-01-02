@@ -53,6 +53,8 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("tracer-service-name", "users_service", "tracer service name.")
 	cmd.Flags().Bool("tracer-spans", true, "tracer spans.")
 	cmd.Flags().String("tracer-host-port", "jaeger:6831", "tracer host address.")
+	cmd.Flags().String("metric-service-name", "users_service", "metric service name")
+	cmd.Flags().String("metric-service-host-port", ":8001", "metric service host port")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -86,7 +88,8 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.TracerConfig.ServiceName = viper.GetString("tracer-service-name")
 	c.cfg.TracerConfig.LogSpans = viper.GetBool("tracer-spans")
 	c.cfg.TracerConfig.HostPort = viper.GetString("tracer-host-port")
-
+	c.cfg.MetricConfig.ServiceName = viper.GetString("metric-service-name")
+	c.cfg.MetricConfig.ServiceHostPort = viper.GetString("metric-service-host-port")
 
 	return nil
 }

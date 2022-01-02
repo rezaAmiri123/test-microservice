@@ -3,6 +3,7 @@ package ports
 import (
 	"encoding/json"
 	"github.com/opentracing/opentracing-go"
+	"github.com/rezaAmiri123/test-microservice/user_service/metrics"
 	"net/http"
 	"strings"
 
@@ -13,11 +14,12 @@ import (
 )
 
 type HttpServer struct {
-	app *app.Application
+	app    *app.Application
+	metric *metrics.UserServiceMetric
 }
 
-func NewHttpServer(addr string, application *app.Application) (*http.Server, error) {
-	httpServer := &HttpServer{app: application}
+func NewHttpServer(addr string, application *app.Application, metric *metrics.UserServiceMetric) (*http.Server, error) {
+	httpServer := &HttpServer{app: application, metric: metric}
 	router := newRouter(httpServer)
 	return &http.Server{
 		Addr:    addr,
@@ -26,6 +28,8 @@ func NewHttpServer(addr string, application *app.Application) (*http.Server, err
 }
 
 func (h *HttpServer) CreateUser(w http.ResponseWriter, r *http.Request) {
+	h.metric.CreateUserHttpRequests.Inc()
+
 	span, ctx := opentracing.StartSpanFromContext(r.Context(), "HttpServer.CreateUser")
 	defer span.Finish()
 

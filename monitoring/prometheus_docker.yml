@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+
+  - job_name: 'system'
+    static_configs:
+      - targets: [ 'host.docker.internal:9101' ]
+
+  - job_name: 'user_service'
+    static_configs:
+      - targets: [ 'user_service:8001' ]
+
+#  - job_name: 'test1'
+#    scrape_interval: 5s
+#    metrics_path: '/metrics'
+#    static_configs:
+#      - targets: [ 'localhost:8080' ]

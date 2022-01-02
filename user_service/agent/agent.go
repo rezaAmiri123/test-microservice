@@ -8,6 +8,7 @@ import (
 	"github.com/rezaAmiri123/test-microservice/user_service/adapters"
 	"github.com/rezaAmiri123/test-microservice/user_service/app"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
+	"github.com/rezaAmiri123/test-microservice/user_service/metrics"
 	"io"
 	"net/http"
 	"sync"
@@ -22,12 +23,14 @@ type Config struct {
 	DBConfig adapters.GORMConfig
 	LoggerConfig applogger.Config
 	TracerConfig tracing.Config
+	MetricConfig metrics.Config
 }
 
 type Agent struct {
 	Config
 
 	logger      logger.Logger
+	metric		*metrics.UserServiceMetric
 	httpServer  *http.Server
 	repository  domain.Repository
 	Application *app.Application
@@ -45,6 +48,7 @@ func NewAgent(config Config) (*Agent, error) {
 	}
 	setupsFn := []func() error{
 		a.setupLogger,
+		a.setupMetric,
 		//a.setupRepository,
 		a.setupTracing,
 		a.setupApplication,

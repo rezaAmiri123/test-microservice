@@ -6,11 +6,13 @@ import (
 )
 
 func (a *Agent) setupTracing() error {
-	tracer,closer,err := tracing.NewJaegerTracer(a.TracerConfig)
-	if err != nil{
-		return err
+	if a.TracerConfig.Enable{
+		tracer,closer,err := tracing.NewJaegerTracer(a.TracerConfig)
+		if err != nil{
+			return err
+		}
+		opentracing.SetGlobalTracer(tracer)
+		a.closers=append(a.closers,closer)
 	}
-	opentracing.SetGlobalTracer(tracer)
-	a.closers=append(a.closers,closer)
 	return nil
 }
