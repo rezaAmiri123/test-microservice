@@ -49,6 +49,10 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("database-password", "go", "database password.")
 	cmd.Flags().String("database-host", "db.local", "database host address.")
 	cmd.Flags().String("database-port", "3306", "database host address.")
+	cmd.Flags().Bool("tracer-enable", true, "tracer enable mode.")
+	cmd.Flags().String("tracer-service-name", "users_service", "tracer service name.")
+	cmd.Flags().Bool("tracer-spans", true, "tracer spans.")
+	cmd.Flags().String("tracer-host-port", "jaeger:6831", "tracer host address.")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -78,6 +82,11 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.DBConfig.Pass = viper.GetString("database-password")
 	c.cfg.DBConfig.Host = viper.GetString("database-host")
 	c.cfg.DBConfig.Port = viper.GetString("database-port")
+	c.cfg.TracerConfig.Enable = viper.GetBool("tracer-enable")
+	c.cfg.TracerConfig.ServiceName = viper.GetString("tracer-service-name")
+	c.cfg.TracerConfig.LogSpans = viper.GetBool("tracer-spans")
+	c.cfg.TracerConfig.HostPort = viper.GetString("tracer-host-port")
+
 
 	return nil
 }

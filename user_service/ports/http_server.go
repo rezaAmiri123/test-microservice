@@ -2,6 +2,7 @@ package ports
 
 import (
 	"encoding/json"
+	"github.com/opentracing/opentracing-go"
 	"net/http"
 	"strings"
 
@@ -25,12 +26,15 @@ func NewHttpServer(addr string, application *app.Application) (*http.Server, err
 }
 
 func (h *HttpServer) CreateUser(w http.ResponseWriter, r *http.Request) {
+	span, ctx := opentracing.StartSpanFromContext(r.Context(), "HttpServer.CreateUser")
+	defer span.Finish()
+
 	u := &domain.User{}
 	if err := json.NewDecoder(r.Body).Decode(u); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if err := h.app.Commands.CreateUser.Handle(r.Context(), u); err != nil {
+	if err := h.app.Commands.CreateUser.Handle(ctx, u); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
