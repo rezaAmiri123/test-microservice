@@ -9,6 +9,7 @@ import (
 	"github.com/rezaAmiri123/test-microservice/user_service/app"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
 	"github.com/rezaAmiri123/test-microservice/user_service/metrics"
+	kafkatopics "github.com/rezaAmiri123/test-microservice/user_service/ports/kafka"
 	"io"
 	"net/http"
 	"sync"
@@ -20,17 +21,18 @@ type Config struct {
 	GRPCServerPort int
 	GRPCServerAddr string
 
-	DBConfig adapters.GORMConfig
+	DBConfig     adapters.GORMConfig
 	LoggerConfig applogger.Config
 	TracerConfig tracing.Config
 	MetricConfig metrics.Config
+	KafkaConfig  kafkatopics.Config
 }
 
 type Agent struct {
 	Config
 
 	logger      logger.Logger
-	metric		*metrics.UserServiceMetric
+	metric      *metrics.UserServiceMetric
 	httpServer  *http.Server
 	repository  domain.Repository
 	Application *app.Application
@@ -38,7 +40,7 @@ type Agent struct {
 	shutdown     bool
 	shutdowns    chan struct{}
 	shutdownLock sync.Mutex
-	closers []io.Closer
+	closers      []io.Closer
 }
 
 func NewAgent(config Config) (*Agent, error) {
@@ -49,6 +51,7 @@ func NewAgent(config Config) (*Agent, error) {
 	setupsFn := []func() error{
 		a.setupLogger,
 		a.setupMetric,
+		a.setupKafka,
 		//a.setupRepository,
 		a.setupTracing,
 		a.setupApplication,

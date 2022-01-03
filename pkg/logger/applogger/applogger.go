@@ -5,6 +5,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -186,4 +187,24 @@ func (l *appLogger) Sync() error {
 // Fatalf uses fmt.Sprintf to log a templated message, then calls os.Exit.
 func (l *appLogger) Fatalf(template string, args ...interface{}) {
 	l.sugarLogger.Fatalf(template, args...)
+}
+
+func (l *appLogger)KafkaProcessMessage(topic string, partition int, message string, workerID int, offset int64, time time.Time){
+	l.logger.Debug(
+		"Processing Kafka message",
+		zap.String(logger.Topic, topic),
+		zap.Int(logger.Partition, partition),
+		zap.String(logger.Message, message),
+		zap.Int(logger.WorkerID, workerID),
+		zap.Int64(logger.Offset, offset),
+		zap.Time(logger.Time, time),
+	)
+}
+func (l *appLogger)KafkaLogCommittedMessage(topic string, partition int, offset int64){
+	l.logger.Info(
+		"Committed Kafka message",
+		zap.String(logger.Topic, topic),
+		zap.Int(logger.Partition, partition),
+		zap.Int64(logger.Offset, offset),
+	)
 }

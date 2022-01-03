@@ -1,5 +1,16 @@
 package logger
 
+import "time"
+
+const (
+	Topic     = "topic"
+	Partition = "partition"
+	Message   = "message"
+	WorkerID  = "workerID"
+	Offset    = "offset"
+	Time      = "time"
+)
+
 // Logger methods interface
 type Logger interface {
 	InitLogger()
@@ -20,4 +31,6 @@ type Logger interface {
 	Fatalf(template string, args ...interface{})
 	Printf(template string, args ...interface{})
 	WithName(name string)
+	KafkaProcessMessage(topic string, partition int, message string, workerID int, offset int64, time time.Time)
+	KafkaLogCommittedMessage(topic string, partition int, offset int64)
 }

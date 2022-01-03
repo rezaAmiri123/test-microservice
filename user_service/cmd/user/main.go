@@ -55,6 +55,9 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("tracer-host-port", "jaeger:6831", "tracer host address.")
 	cmd.Flags().String("metric-service-name", "users_service", "metric service name")
 	cmd.Flags().String("metric-service-host-port", ":8001", "metric service host port")
+	cmd.Flags().StringSlice("kafka-service-brokers", []string{"localhost:9092"}, "kafka service brokers")
+	cmd.Flags().String("kafka-service-group-id", ":8001", "metric service host port")
+	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -90,7 +93,9 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.TracerConfig.HostPort = viper.GetString("tracer-host-port")
 	c.cfg.MetricConfig.ServiceName = viper.GetString("metric-service-name")
 	c.cfg.MetricConfig.ServiceHostPort = viper.GetString("metric-service-host-port")
-
+	c.cfg.KafkaConfig.Kafka.Brokers = viper.GetStringSlice("kafka-service-brokers")
+	c.cfg.KafkaConfig.Kafka.GroupID = viper.GetString("kafka-service-group-id")
+	c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
 	return nil
 }
 
