@@ -7,5 +7,5 @@ docker_dev:
 
 local:
 	@echo Starting local docker compose
-	docker-compose -f docker-compose.local.yaml up -d --build
+	docker-compose -f docker-compose-simple.yaml up -d --build
 
