@@ -25,6 +25,7 @@ services:
     depends_on:
       - microservices_mysql
       - jaeger
+      - grafana
       - prometheus
       - zoo1
       - kafka1
@@ -124,6 +125,13 @@ services:
       - zoo1
     networks: [ "microservices" ]
 
+  grafana:
+    container_name: grafana_container
+    restart: always
+    image: grafana/grafana
+    ports:
+      - '3005:3000'
+    networks: [ "microservices" ]
 
 #volumes:
 #  my-db:
