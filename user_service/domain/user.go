@@ -1,21 +1,16 @@
 package domain
 
 import (
-	"github.com/go-playground/validator/v10"
+	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"github.com/rezaAmiri123/test-microservice/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var validate *validator.Validate
 
 var (
 	ErrEmptyPassword = errors.New("empty password")
 )
-
-func SetValidator(val *validator.Validate) {
-	validate = val
-}
 
 // User is user model
 type User struct {
@@ -27,20 +22,9 @@ type User struct {
 	Image    string `json:"image"`
 }
 
-func NewUser(username, password, email, bio, image string) *User {
-	return &User{
-		UUID:     uuid.New().String(),
-		Username: username,
-		Password: password,
-		Email:    email,
-		Bio:      bio,
-		Image:    image,
-	}
-}
-
 // Validate validates fields of user model
-func (u User) Validate() error {
-	if err := validate.Struct(u);err!= nil{
+func (u User) Validate(ctx context.Context) error {
+	if err := utils.ValidateStruct(ctx, u); err != nil {
 		return err
 	}
 	return nil

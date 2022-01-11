@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"github.com/opentracing/opentracing-go"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
 )
 
@@ -10,19 +11,26 @@ type CreateUserHandler struct {
 }
 
 func NewCreateUserHandler(userRepo domain.Repository) CreateUserHandler {
-	if userRepo==nil{
+	if userRepo == nil {
 		panic("userRepo is nil")
 	}
 	return CreateUserHandler{userRepo: userRepo}
 }
 
-func (h CreateUserHandler) Handle(ctx context.Context, user *domain.User)error {
+func (h CreateUserHandler) Handle(ctx context.Context, user *domain.User) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "CreateUserHandler.Handle")
+	defer span.Finish()
+
 	if err := user.SetUUID(); err != nil {
 		return err
 	}
-	if err := user.Validate(); err != nil {
+	if err := user.Validate(ctx); err != nil {
 		return err
 	}
+
+	//if err := user.Validate(); err != nil {
+	//	return err
+	//}
 	if err := user.HashPassword(); err != nil {
 		return err
 	}

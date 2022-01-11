@@ -30,7 +30,7 @@ type GORMConfig struct {
 	Port string
 }
 
-func (m *GORMUserModel) protoDomainUser() *domain.User {
+func (m *GORMUserModel) ProtoDomainUser() *domain.User {
 	return &domain.User{
 		UUID:     m.UUID,
 		Username: m.Username,
@@ -51,7 +51,7 @@ func (m *GORMUserModel) protoGORMUser(user *domain.User) {
 }
 
 type GORMUserRepository struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func NewGORMUserRepository(config GORMConfig) (*GORMUserRepository, error) {
@@ -64,13 +64,14 @@ func NewGORMUserRepository(config GORMConfig) (*GORMUserRepository, error) {
 	if err := migrate(db); err != nil {
 		return nil, errors.Wrap(err, "cannot migrate database")
 	}
-	return &GORMUserRepository{db: db}, nil
+	return &GORMUserRepository{DB: db}, nil
 }
 
 func (r *GORMUserRepository) Create(ctx context.Context, user *domain.User) error {
 	gormUser := &GORMUserModel{}
 	gormUser.protoGORMUser(user)
-	err := r.db.Create(gormUser).Error
+	r.DB.LogMode(true)
+	err := r.DB.Create(gormUser).Error
 	if err != nil {
 		return errors.Wrap(err, "cannot create user")
 	}
@@ -78,10 +79,10 @@ func (r *GORMUserRepository) Create(ctx context.Context, user *domain.User) erro
 }
 func (r *GORMUserRepository) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
 	var gormUser GORMUserModel
-	if err := r.db.Where(GORMUserModel{Username: username}).First(&gormUser).Error; err != nil {
+	if err := r.DB.Where(GORMUserModel{Username: username}).First(&gormUser).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot find user")
 	}
-	return gormUser.protoDomainUser(), nil
+	return gormUser.ProtoDomainUser(), nil
 }
 
 func migrate(db *gorm.DB) error {

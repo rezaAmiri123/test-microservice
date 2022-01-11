@@ -39,7 +39,7 @@ type cfg struct {
 func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("config-file", "", "path to config file.")
 	cmd.Flags().String("http-server-addr", "", "http server address.")
-	cmd.Flags().Int("http-server-port", 8080, "http server port.")
+	cmd.Flags().Int("http-server-port", 8180, "http server port.")
 	cmd.Flags().String("auth-server-addr", "localhost", "auth server address.")
 	cmd.Flags().Int("auth-server-port", 8081, "auth server port.")
 	//cmd.Flags().String("grpc-server-addr", "localhost", "grpc server address.")

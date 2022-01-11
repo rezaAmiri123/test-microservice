@@ -1,14 +1,13 @@
 package domain_test
 
 import (
-	"github.com/go-playground/validator/v10"
+	"context"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestUser_Validate(t *testing.T) {
-	domain.SetValidator(validator.New())
 	t.Parallel()
 	testCases := []struct {
 		Name      string
@@ -46,7 +45,7 @@ func TestUser_Validate(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			t.Parallel()
 			u := tc.GetUserFn()
-			err := u.Validate()
+			err := u.Validate(context.Background())
 			if tc.HasError {
 				require.True(t, err != nil)
 			} else {
@@ -58,5 +57,10 @@ func TestUser_Validate(t *testing.T) {
 
 func newUser(t testing.TB) *domain.User {
 	t.Helper()
-	return domain.NewUser("username", "password", "email@example.com", "", "")
+	user := &domain.User{
+		Username: "username",
+		Password: "password",
+		Email:    "email@example.com",
+	}
+	return user
 }
