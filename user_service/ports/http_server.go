@@ -59,6 +59,37 @@ func (h *HttpServer) GetProfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *HttpServer) Login(w http.ResponseWriter, r *http.Request) {
+	type UserLogin struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	userLogin := &UserLogin{}
+	if err := json.NewDecoder(r.Body).Decode(userLogin); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	u, err := h.app.Queries.GetProfile.Handle(r.Context(), userLogin.Username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	token,err := u.GenerateJWTToken()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	resp := map[string]string{
+		"token": token,
+	}
+	err = json.NewEncoder(w).Encode(resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h *HttpServer) tokenFromHeader(r *http.Request) string {
 	headerValue := r.Header.Get("Authorization")
 
@@ -75,7 +106,7 @@ func newRouter(httpServer *HttpServer) chi.Router {
 	apiRouter.Route("/users", func(r chi.Router) {
 		r.Get("/profile", httpServer.GetProfile)
 		r.Post("/register", httpServer.CreateUser)
-		//r.Post("/login", httpServer.Login)
+		r.Post("/login", httpServer.Login)
 	})
 
 	rootRouter := chi.NewRouter()
