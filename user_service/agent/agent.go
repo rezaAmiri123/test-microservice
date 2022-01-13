@@ -51,10 +51,11 @@ func NewAgent(config Config) (*Agent, error) {
 	setupsFn := []func() error{
 		a.setupLogger,
 		a.setupMetric,
-		a.setupKafka,
+
 		//a.setupRepository,
 		a.setupTracing,
 		a.setupApplication,
+		a.setupKafka,
 		a.setupHttpServer,
 		//a.setupGRPCServer,
 		//a.setupTracer,

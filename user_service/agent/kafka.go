@@ -9,7 +9,7 @@ import (
 func (a *Agent) setupKafka() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	a.closers = append(a.closers, closer{cancel: cancel})
-	userMessageProcessor := kafka.NewUserMessageProcessor(a.logger, a.KafkaConfig, a.metric)
+	userMessageProcessor := kafka.NewUserMessageProcessor(a.logger, a.KafkaConfig, a.metric, a.Application)
 	cg := kafkaClient.NewConsumerGroup(a.KafkaConfig.Kafka.Brokers, a.KafkaConfig.Kafka.GroupID, a.logger)
 	//kafkaConn, err := kafkaClient.NewKafkaConn(ctx, &a.KafkaConfig.Kafka)
 	//if err != nil {

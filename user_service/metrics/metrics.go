@@ -14,6 +14,7 @@ type Config struct {
 
 type UserServiceMetric struct {
 	CreateUserHttpRequests prometheus.Counter
+	CreateUserKafkaRequests prometheus.Counter
 	SuccessKafkaMessages prometheus.Counter
 	ErrorKafkaMessages   prometheus.Counter
 
@@ -24,6 +25,10 @@ func NewUserServiceMetric(cfg *Config) *UserServiceMetric  {
 		CreateUserHttpRequests: promauto.NewCounter(prometheus.CounterOpts{
 			Name: fmt.Sprintf("%s_create_user_http_requests_total", cfg.ServiceName),
 			Help: "The total of create user requests",
+		}),
+		CreateUserKafkaRequests: promauto.NewCounter(prometheus.CounterOpts{
+			Name: fmt.Sprintf("%s_create_user_kafka_requests_total", cfg.ServiceName),
+			Help: "The total of create user kafka requests",
 		}),
 		SuccessKafkaMessages: promauto.NewCounter(prometheus.CounterOpts{
 			Name: fmt.Sprintf("%s_success_kafka_processed_messages_total", cfg.ServiceName),

@@ -1,0 +1,145 @@
+version: "3.8"
+
+services:
+#  user_service:
+#    container_name: user_service
+#    build:
+#      context: .
+#      dockerfile: docker/user_service.Dockerfile
+#    ports:
+#      - "8180:8180"
+#      - "8001:8001"
+#    expose:
+#      - '8080'
+#      - "8001"
+##    volumes:
+##      - ./:/app
+#    restart: always
+##    environment:
+##      - POSTGRES_HOST=host.docker.internal
+##      - POSTGRES_PORT=5432
+##      - REDIS_ADDR=host.docker.internal:6379
+##      - MONGO_URI=mongodb://host.docker.internal:27017
+##      - JAEGER_HOST=host.docker.internal:6831
+##      - KAFKA_BROKERS=host.docker.internal:9092
+#    depends_on:
+#      - microservices_mysql
+#      - jaeger
+#      - grafana
+#      - prometheus
+#      - zoo1
+#      - kafka1
+#    networks: [ "microservices" ]
+
+  microservices_mysql:
+    image: mysql:5.7
+    container_name: microservices_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'go'
+      MYSQL_USER: 'go'
+      MYSQL_PASSWORD: 'go'
+      MYSQL_ROOT_PASSWORD: 'go'
+      MAX_ALLOWED_PACKET: '256M'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - data_container:/var/lib/mysql
+    hostname: db.local
+    networks: [ "microservices" ]
+
+  jaeger:
+    container_name: jaeger_container
+    restart: always
+    image: jaegertracing/all-in-one:1.21
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    hostname: jaeger
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+    networks: [ "microservices" ]
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./monitoring/prometheus_docker.yml:/etc/prometheus/prometheus.yml:ro
+    networks: [ "microservices" ]
+#  node_exporter:
+#    container_name: node_exporter_container
+#    restart: always
+#    image: prom/node-exporter
+#    ports:
+#      - '9101:9100'
+#    networks: [ "microservices" ]
+
+
+  zoo1:
+    image: zookeeper:3.4.9
+    restart: always
+    hostname: zoo1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=zoo1:2888:3888
+    volumes:
+      - zoo_volumes:/data
+      - zoo_volumes:/datalog
+    networks: [ "microservices" ]
+  kafka1:
+    image: confluentinc/cp-kafka:5.5.1
+    restart: always
+    hostname: kafka1
+    ports:
+      - "9092:9092"
+      - "9999:9999"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-kafka1}
+    volumes:
+      - kafka_volumes:/var/lib/kafka/data
+    depends_on:
+      - zoo1
+    networks: [ "microservices" ]
+
+  grafana:
+    container_name: grafana_container
+    restart: always
+    image: grafana/grafana
+    ports:
+      - '3005:3000'
+    networks: [ "microservices" ]
+
+#volumes:
+#  my-db:
+volumes:
+  data_container:
+  kafka_volumes:
+  zoo_volumes:
+
+networks:
+  microservices:
+    name: microservices

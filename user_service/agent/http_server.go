@@ -2,12 +2,12 @@ package agent
 
 import (
 	"fmt"
-	"github.com/rezaAmiri123/test-microservice/user_service/ports"
+	"github.com/rezaAmiri123/test-microservice/user_service/ports/http"
 )
 
 func (a *Agent) setupHttpServer() error {
 	httpAddress := fmt.Sprintf("%s:%d", a.Config.HttpServerAddr,a.Config.HttpServerPort)
-	httpServer, err := ports.NewHttpServer(httpAddress, a.Application,a.metric)
+	httpServer, err := http.NewHttpServer(httpAddress, a.Application,a.metric)
 	if err != nil {
 		return err
 	}

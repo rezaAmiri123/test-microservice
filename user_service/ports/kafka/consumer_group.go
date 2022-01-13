@@ -3,6 +3,7 @@ package kafka
 import (
 	"context"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
+	"github.com/rezaAmiri123/test-microservice/user_service/app"
 	"github.com/rezaAmiri123/test-microservice/user_service/metrics"
 	"github.com/segmentio/kafka-go"
 	"sync"
@@ -14,10 +15,11 @@ type userMessageProcessor struct {
 	log    logger.Logger
 	cfg    Config
 	metric *metrics.UserServiceMetric
+	app    *app.Application
 }
 
-func NewUserMessageProcessor(log logger.Logger, cfg Config, metric *metrics.UserServiceMetric) *userMessageProcessor {
-	return &userMessageProcessor{log: log, cfg: cfg, metric: metric}
+func NewUserMessageProcessor(log logger.Logger, cfg Config, metric *metrics.UserServiceMetric, app *app.Application) *userMessageProcessor {
+	return &userMessageProcessor{log: log, cfg: cfg, metric: metric, app: app}
 }
 
 func (s *userMessageProcessor) ProcessMessage(ctx context.Context, r *kafka.Reader, wg *sync.WaitGroup, workerID int) {

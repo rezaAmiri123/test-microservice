@@ -12,7 +12,7 @@ func main() {
 	// produce messages in a new go routine, since
 	// both the produce and consume functions are
 	// blocking
-	go kafka1.Produce(ctx)
+	kafka1.Produce(ctx)
 	time.Sleep(time.Hour)
 	//kafka1.Consume(ctx)
 }

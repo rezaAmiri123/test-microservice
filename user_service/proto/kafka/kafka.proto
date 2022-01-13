@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package kafkaMessages;
+
+option go_package = "./;kafkaMessages";
+
+//	UUID     string `json:"uuid"`
+//	Username string `json:"username" validate:"required,min=6,max=30"`
+//	Password string `json:"password" validate:"required,min=8,max=15"`
+//	Email    string `json:"email" validate:"required,min=3,max=250,email"`
+//	Bio      string `json:"bio"`
+//	Image    string `json:"image"`
+
+message User {
+  string UUID=1;
+  string Username=2;
+  string Password=3;
+  string Email=4;
+  string Bio=5;
+  string Image=6;
+}
+
+message CreateUser{
+  User user=1;
+}

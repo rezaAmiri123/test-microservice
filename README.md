@@ -1,3 +1,6 @@
+we have a user service that handles the user work like register and login
+
+
 ### Jaeger UI:
 
 http://localhost:16686
