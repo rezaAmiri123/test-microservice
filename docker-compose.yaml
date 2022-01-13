@@ -8,9 +8,11 @@ services:
       dockerfile: docker/user_service.Dockerfile
     ports:
       - "8180:8180"
+      - "8181:8181"
       - "8001:8001"
     expose:
-      - '8080'
+      - '8180'
+      - "8181"
       - "8001"
 #    volumes:
 #      - ./:/app

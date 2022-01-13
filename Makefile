@@ -17,3 +17,9 @@ user_service_proto:
 		--go_out=user_service/proto/kafka --go_opt=paths=source_relative \
 		--go-grpc_out=user_service/proto/kafka --go-grpc_opt=paths=source_relative \
 		--proto_path=user_service/proto/kafka user_service/proto/kafka/kafka.proto
+
+	protoc \
+		--go_out=user_service/proto/grpc --go_opt=paths=source_relative \
+		--go-grpc_out=user_service/proto/grpc --go-grpc_opt=paths=source_relative \
+		--proto_path=user_service/proto/grpc user_service/proto/grpc/users.proto
+

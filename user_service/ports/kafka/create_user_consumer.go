@@ -56,7 +56,6 @@ func (s *userMessageProcessor) processCreateUser(ctx context.Context, r *kafka.R
 	if err != nil{
 		s.log.Errorf("error create user consumer", err)
 	}
-	s.log.Info("user created llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
 	s.commitMessage(ctx, r, m)
 
 }

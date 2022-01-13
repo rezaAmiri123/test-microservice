@@ -10,16 +10,17 @@ import (
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
 	"github.com/rezaAmiri123/test-microservice/user_service/metrics"
 	kafkatopics "github.com/rezaAmiri123/test-microservice/user_service/ports/kafka"
+	"google.golang.org/grpc"
 	"io"
 	"net/http"
 	"sync"
 )
 
 type Config struct {
-	HttpServerPort int
 	HttpServerAddr string
-	GRPCServerPort int
+	HttpServerPort int
 	GRPCServerAddr string
+	GRPCServerPort int
 
 	DBConfig     adapters.GORMConfig
 	LoggerConfig applogger.Config
@@ -34,6 +35,7 @@ type Agent struct {
 	logger      logger.Logger
 	metric      *metrics.UserServiceMetric
 	httpServer  *http.Server
+	grpcServer  *grpc.Server
 	repository  domain.Repository
 	Application *app.Application
 
@@ -57,6 +59,7 @@ func NewAgent(config Config) (*Agent, error) {
 		a.setupApplication,
 		a.setupKafka,
 		a.setupHttpServer,
+		a.setupGrpcServer,
 		//a.setupGRPCServer,
 		//a.setupTracer,
 	}
@@ -81,10 +84,10 @@ func (a *Agent) Shutdown() error {
 		func() error {
 			return a.httpServer.Shutdown(context.Background())
 		},
-		//func() error {
-		//	a.grpcServer.GracefulStop()
-		//	return nil
-		//},
+		func() error {
+			a.grpcServer.GracefulStop()
+			return nil
+		},
 		//func() error {
 		//	return a.jaegerCloser.Close()
 		//},
