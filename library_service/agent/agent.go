@@ -56,7 +56,7 @@ func NewAgent(config Config) (*Agent, error) {
 		a.setupTracing,
 		a.setupApplication,
 		//a.setupKafka,
-		//a.setupHttpServer,
+		a.setupHttpServer,
 		//a.setupGrpcServer,
 		//a.setupGRPCServer,
 		//a.setupTracer,

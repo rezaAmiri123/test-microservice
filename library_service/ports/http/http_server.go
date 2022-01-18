@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/labstack/echo/v4"
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/metrics"
 	"net/http"
@@ -13,28 +14,36 @@ type HttpServer struct {
 	metric *metrics.ArticleServiceMetric
 }
 
-func NewHttpServer(addr string, application *app.Application, metric *metrics.UserServiceMetric) (*http.Server, error) {
+func NewHttpServer(addr string, application *app.Application, metric *metrics.ArticleServiceMetric) (*http.Server, error) {
 	httpServer := &HttpServer{app: application, metric: metric}
-	router := newRouter(httpServer)
+	router := newEchoRouter(httpServer)
 	return &http.Server{
 		Addr:    addr,
 		Handler: router,
 	}, nil
 }
 
-func newRouter(httpServer *HttpServer) chi.Router {
-	apiRouter := chi.NewRouter()
-	setMiddlewares(apiRouter)
-	apiRouter.Route("/users", func(r chi.Router) {
-		r.Get("/profile", httpServer.GetProfile)
-		r.Post("/register", httpServer.CreateUser)
-		r.Post("/login", httpServer.Login)
-	})
+// func newRouter(httpServer *HttpServer) chi.Router {
+// 	apiRouter := chi.NewRouter()
+// 	setMiddlewares(apiRouter)
+// 	apiRouter.Route("/users", func(r chi.Router) {
+// 		r.Get("/profile", httpServer.GetProfile)
+// 		r.Post("/register", httpServer.CreateUser)
+// 		r.Post("/login", httpServer.Login)
+// 	})
 
-	rootRouter := chi.NewRouter()
-	// we are mounting all APIs under /api path
-	rootRouter.Mount("/api/v1", apiRouter)
-	return rootRouter
+// 	rootRouter := chi.NewRouter()
+// 	// we are mounting all APIs under /api path
+// 	rootRouter.Mount("/api/v1", apiRouter)
+// 	return rootRouter
+// }
+
+func newEchoRouter(httpServer *HttpServer) *echo.Echo {
+	e := echo.New()
+	v1 := e.Group("/api/v1")
+	articleGroup := v1.Group("/articles")
+	articleGroup.POST("/create", httpServer.CreateArticle())
+	return e
 }
 
 func setMiddlewares(router *chi.Mux) {
