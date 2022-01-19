@@ -16,10 +16,12 @@ import (
 )
 
 type Config struct {
-	HttpServerAddr string
-	HttpServerPort int
-	GRPCServerAddr string
-	GRPCServerPort int
+	HttpServerAddr     string
+	HttpServerPort     int
+	GRPCServerAddr     string
+	GRPCServerPort     int
+	GRPCAuthClientAddr string
+	GRPCAuthClientPort int
 
 	DBConfig     adapters.GORMConfig
 	LoggerConfig applogger.Config
@@ -30,12 +32,13 @@ type Config struct {
 type Agent struct {
 	Config
 
-	logger      logger.Logger
-	metric      *metrics.ArticleServiceMetric
-	httpServer  *http.Server
-	grpcServer  *grpc.Server
-	repository  domain.Repository
-	Application *app.Application
+	logger       logger.Logger
+	metric       *metrics.ArticleServiceMetric
+	httpServer   *http.Server
+	grpcServer   *grpc.Server
+	repository   domain.Repository
+	Application  *app.Application
+	ExtraService map[string]interface{}
 
 	shutdown     bool
 	shutdowns    chan struct{}
@@ -45,8 +48,9 @@ type Agent struct {
 
 func NewAgent(config Config) (*Agent, error) {
 	a := &Agent{
-		Config:    config,
-		shutdowns: make(chan struct{}),
+		Config:       config,
+		shutdowns:    make(chan struct{}),
+		ExtraService: make(map[string]interface{}),
 	}
 	setupsFn := []func() error{
 		a.setupLogger,
@@ -56,6 +60,7 @@ func NewAgent(config Config) (*Agent, error) {
 		a.setupTracing,
 		a.setupApplication,
 		//a.setupKafka,
+		a.setupAuthClient,
 		a.setupHttpServer,
 		//a.setupGrpcServer,
 		//a.setupGRPCServer,
