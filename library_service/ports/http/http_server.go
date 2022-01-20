@@ -12,6 +12,7 @@ import (
 type HttpServer struct {
 	app    *app.Application
 	metric *metrics.ArticleServiceMetric
+	authClient
 }
 
 func NewHttpServer(addr string, application *app.Application, metric *metrics.ArticleServiceMetric) (*http.Server, error) {

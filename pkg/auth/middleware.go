@@ -45,11 +45,6 @@ func (m UserHttpMiddleware) tokenFromHeader(r *http.Request) string {
 	return ""
 }
 
-type User struct {
-	Username string
-	UUID     string
-}
-
 type ctxKey int
 
 const (

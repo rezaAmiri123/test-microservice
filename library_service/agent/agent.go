@@ -2,17 +2,20 @@ package agent
 
 import (
 	"context"
+	"io"
+	"net/http"
+	"sync"
+
 	"github.com/rezaAmiri123/test-microservice/library_service/adapters"
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/metrics"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
 	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
+	authapi "github.com/rezaAmiri123/test-microservice/user_service/proto/grpc"
 	"google.golang.org/grpc"
-	"io"
-	"net/http"
-	"sync"
 )
 
 type Config struct {
@@ -32,13 +35,13 @@ type Config struct {
 type Agent struct {
 	Config
 
-	logger       logger.Logger
-	metric       *metrics.ArticleServiceMetric
-	httpServer   *http.Server
-	grpcServer   *grpc.Server
-	repository   domain.Repository
-	Application  *app.Application
-	ExtraService map[string]interface{}
+	logger      logger.Logger
+	metric      *metrics.ArticleServiceMetric
+	httpServer  *http.Server
+	grpcServer  *grpc.Server
+	repository  domain.Repository
+	Application *app.Application
+	AuthClient  auth.AuthClient
 
 	shutdown     bool
 	shutdowns    chan struct{}
@@ -48,9 +51,8 @@ type Agent struct {
 
 func NewAgent(config Config) (*Agent, error) {
 	a := &Agent{
-		Config:       config,
-		shutdowns:    make(chan struct{}),
-		ExtraService: make(map[string]interface{}),
+		Config:    config,
+		shutdowns: make(chan struct{}),
 	}
 	setupsFn := []func() error{
 		a.setupLogger,
