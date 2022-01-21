@@ -1,22 +1,24 @@
 package http
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/metrics"
-	"net/http"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 )
 
 type HttpServer struct {
-	app    *app.Application
-	metric *metrics.ArticleServiceMetric
-	authClient
+	app        *app.Application
+	metric     *metrics.ArticleServiceMetric
+	authClient auth.UserAuthClient
 }
 
-func NewHttpServer(addr string, application *app.Application, metric *metrics.ArticleServiceMetric) (*http.Server, error) {
-	httpServer := &HttpServer{app: application, metric: metric}
+func NewHttpServer(addr string, application *app.Application, metric *metrics.ArticleServiceMetric, authClient auth.UserAuthClient) (*http.Server, error) {
+	httpServer := &HttpServer{app: application, metric: metric, authClient: authClient}
 	router := newEchoRouter(httpServer)
 	return &http.Server{
 		Addr:    addr,

@@ -35,7 +35,7 @@ func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 			// http.Error(w, err.Error(), http.StatusBadRequest)
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
-		u, err := auth.UserFromCtx(c.Request().Context())
+		u, err := h.authClient.VerityToken(c.Request().Context(), auth.GetTokenFromHeader(c.Request()))
 		if err != nil {
 			// http.Error(w, err.Error(), http.StatusBadRequest)
 			return c.JSON(http.StatusBadRequest, err.Error())
