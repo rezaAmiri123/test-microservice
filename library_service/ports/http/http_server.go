@@ -14,10 +14,10 @@ import (
 type HttpServer struct {
 	app        *app.Application
 	metric     *metrics.ArticleServiceMetric
-	authClient auth.UserAuthClient
+	authClient auth.AuthClient
 }
 
-func NewHttpServer(addr string, application *app.Application, metric *metrics.ArticleServiceMetric, authClient auth.UserAuthClient) (*http.Server, error) {
+func NewHttpServer(addr string, application *app.Application, metric *metrics.ArticleServiceMetric, authClient auth.AuthClient) (*http.Server, error) {
 	httpServer := &HttpServer{app: application, metric: metric, authClient: authClient}
 	router := newEchoRouter(httpServer)
 	return &http.Server{

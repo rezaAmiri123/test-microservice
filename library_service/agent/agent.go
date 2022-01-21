@@ -14,7 +14,6 @@ import (
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
 	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
-	authapi "github.com/rezaAmiri123/test-microservice/user_service/proto/grpc"
 	"google.golang.org/grpc"
 )
 
