@@ -29,5 +29,12 @@ func (a *UserAuthClient) Login(ctx context.Context, username, password string) (
 }
 
 func (a *UserAuthClient) VerityToken(ctx context.Context, token string) (*User, error) {
-	return nil, nil
+	u, err := a.AuthClient.VerifyToken(ctx, &UserApi.VerifyTokenRequest{Token: token})
+	if err != nil {
+		return nil, err
+	}
+	return &User{
+		UUID:     u.GetUuid(),
+		Username: u.GetUsername(),
+	}, nil
 }

@@ -1,4 +1,4 @@
-package postgres
+package pg
 
 import (
 	"context"
@@ -19,6 +19,10 @@ type PGArticleModel struct {
 	Body        string    `json:"body" db:"body"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
+}
+
+func NewPGArticleRepository(db *sqlx.DB) *PGArticleRepository {
+	return &PGArticleRepository{DB: db}
 }
 
 // News Repository
@@ -56,14 +60,14 @@ func (r *PGArticleRepository) Create(ctx context.Context, article *article.Artic
 	if err := r.DB.QueryRowxContext(
 		ctx,
 		createArticle,
-		&pgArticle.UUID,
-		&pgArticle.UserUUID,
-		&pgArticle.Title,
-		&pgArticle.Slug,
-		&pgArticle.Description,
-		&pgArticle.Body,
-	).StructScan(article); err != nil {
-		return errors.Wrap(err, "newsRepo.Create.QueryRowxContext")
+		pgArticle.UUID,
+		pgArticle.UserUUID,
+		pgArticle.Title,
+		pgArticle.Slug,
+		pgArticle.Description,
+		pgArticle.Body,
+	).Err(); err != nil {
+		return errors.Wrap(err, "create article")
 	}
 
 	// gormArticle := &GORMArticleModel{}
@@ -79,13 +83,8 @@ func (r *PGArticleRepository) GetBySlug(ctx context.Context, slug string) (*arti
 	defer span.Finish()
 
 	articleModel := &PGArticleModel{}
-	if err := r.DB.GetContext(ctx, articleModel, getNewsByID, slug); err != nil {
+	if err := r.DB.GetContext(ctx, articleModel, getArticleBySlug, slug); err != nil {
 		return nil, errors.Wrap(err, "newsRepo.GetNewsByID.GetContext")
 	}
-
-	var gormArticle GORMArticleModel
-	if err := r.DB.Where(GORMArticleModel{Slug: slug}).First(&gormArticle).Error; err != nil {
-		return nil, errors.Wrap(err, "cannot find user")
-	}
-	return gormArticle.protoDomainArticle(), nil
+	return articleModel.protoDomainArticle(), nil
 }

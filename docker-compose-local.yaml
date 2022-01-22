@@ -49,6 +49,19 @@ services:
       - data_container:/var/lib/mysql
     hostname: db.local
     networks: [ "microservices" ]
+  postgesql:
+    image: postgres:12-alpine
+    container_name: api_postgesql
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=auth_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [ "microservices" ]
 
   jaeger:
     container_name: jaeger_container
@@ -100,6 +113,7 @@ services:
       - zoo_volumes:/data
       - zoo_volumes:/datalog
     networks: [ "microservices" ]
+
   kafka1:
     image: confluentinc/cp-kafka:5.5.1
     restart: always
@@ -139,6 +153,7 @@ volumes:
   data_container:
   kafka_volumes:
   zoo_volumes:
+  pgdata:
 
 networks:
   microservices:

@@ -2,6 +2,7 @@ package commands
 
 import (
 	"context"
+	"github.com/gosimple/slug"
 	"github.com/opentracing/opentracing-go"
 	"github.com/rezaAmiri123/test-microservice/library_service/domain/article"
 )
@@ -24,6 +25,7 @@ func (h CreateArticleHandler) Handle(ctx context.Context, a *article.Article, us
 	if err := a.SetUUID(userUUID); err != nil {
 		return err
 	}
+	a.Slug = slug.Make(a.Title)
 	if err := a.Validate(ctx); err != nil {
 		return err
 	}

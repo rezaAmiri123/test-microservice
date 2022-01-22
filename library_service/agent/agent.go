@@ -2,11 +2,11 @@ package agent
 
 import (
 	"context"
+	"github.com/rezaAmiri123/test-microservice/pkg/db/postgres"
 	"io"
 	"net/http"
 	"sync"
 
-	"github.com/rezaAmiri123/test-microservice/library_service/adapters"
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/metrics"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
@@ -25,7 +25,8 @@ type Config struct {
 	GRPCAuthClientAddr string
 	GRPCAuthClientPort int
 
-	DBConfig     adapters.GORMConfig
+	//DBConfig     adapters.GORMConfig
+	DBConfig     postgres.Config
 	LoggerConfig applogger.Config
 	TracerConfig tracing.Config
 	MetricConfig metrics.Config

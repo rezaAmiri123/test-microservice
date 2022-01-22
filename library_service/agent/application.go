@@ -1,17 +1,22 @@
 package agent
 
 import (
-	"github.com/rezaAmiri123/test-microservice/library_service/adapters"
+	"github.com/rezaAmiri123/test-microservice/library_service/adapters/pg"
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/app/commands"
 	"github.com/rezaAmiri123/test-microservice/library_service/app/queries"
+	"github.com/rezaAmiri123/test-microservice/pkg/db/postgres"
 )
 
 func (a *Agent) setupApplication() error {
-	repo, err := adapters.NewGORMArticleRepository(a.DBConfig)
+	dbConn, err := postgres.NewPsqlDB(a.DBConfig)
 	if err != nil {
 		return err
 	}
+
+	//repo, err := adapters.NewGORMArticleRepository(a.DBConfig)
+	repo := pg.NewPGArticleRepository(dbConn)
+
 	application := &app.Application{
 		Commands: app.Commands{
 			CreateArticle: commands.NewCreateArticleHandler(repo),
