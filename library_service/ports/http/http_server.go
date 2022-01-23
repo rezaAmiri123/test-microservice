@@ -46,6 +46,7 @@ func newEchoRouter(httpServer *HttpServer) *echo.Echo {
 	v1 := e.Group("/api/v1")
 	articleGroup := v1.Group("/articles")
 	articleGroup.POST("/create", httpServer.CreateArticle())
+	articleGroup.GET("/article/:slug", httpServer.GetBySlug())
 	return e
 }
 

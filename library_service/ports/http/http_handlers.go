@@ -49,3 +49,49 @@ func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, nil)
 	}
 }
+
+//func (h *HttpServer) GetArticle(w http.ResponseWriter, r *http.Request) {
+//	articleSlug := chi.URLParam(r, "slug")
+//	a, err := h.app.Queries.GetArticle.Handle(r.Context(), articleSlug)
+//	if err != nil {
+//		http.Error(w, err.Error(), http.StatusInternalServerError)
+//		return
+//	}
+//	err = json.NewEncoder(w).Encode(a)
+//	if err != nil {
+//		http.Error(w, err.Error(), http.StatusInternalServerError)
+//		return
+//	}
+//}
+
+func (h *HttpServer) GetBySlug() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		articleSlug := c.Param("slug")
+		a, err := h.app.Queries.GetArticleBySlug.Handle(c.Request().Context(), articleSlug)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+		return c.JSON(http.StatusOK, a)
+	}
+}
+
+//func (h newsHandlers) GetByID() echo.HandlerFunc {
+//	return func(c echo.Context) error {
+//		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "newsHandlers.GetByID")
+//		defer span.Finish()
+//
+//		newsUUID, err := uuid.Parse(c.Param("news_id"))
+//		if err != nil {
+//			utils.LogResponseError(c, h.logger, err)
+//			return c.JSON(httpErrors.ErrorResponse(err))
+//		}
+//
+//		newsByID, err := h.newsUC.GetNewsByID(ctx, newsUUID)
+//		if err != nil {
+//			utils.LogResponseError(c, h.logger, err)
+//			return c.JSON(httpErrors.ErrorResponse(err))
+//		}
+//
+//		return c.JSON(http.StatusOK, newsByID)
+//	}
+//}
