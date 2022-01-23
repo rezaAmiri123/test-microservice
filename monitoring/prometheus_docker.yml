@@ -15,6 +15,10 @@ scrape_configs:
     static_configs:
       - targets: [ 'user_service:8001' ]
 
+  - job_name: 'library_service'
+    static_configs:
+      - targets: [ 'library_service:8001' ]
+
 #  - job_name: 'test1'
 #    scrape_interval: 5s
 #    metrics_path: '/metrics'

@@ -46,6 +46,7 @@ func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, err.Error())
 		}
 		// w.WriteHeader(http.StatusOK)
+		h.metric.CreateArticleHttpRequests.Inc()
 		return c.JSON(http.StatusOK, nil)
 	}
 }

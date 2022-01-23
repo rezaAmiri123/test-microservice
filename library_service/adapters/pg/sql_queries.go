@@ -2,8 +2,7 @@ package pg
 
 const (
 	createArticle = `INSERT INTO articles (uuid, user_uuid, title, slug, description, body, created_at, updated_at) 
-									VALUES ($1, $2, $3, $4, $5, $6, now(), now()) 
-									RETURNING *`
+									VALUES ($1, $2, $3, $4, $5, $6, now(), now())`
 
 	//getNewsByID = `SELECT n.news_id,
 	//								n.title,
