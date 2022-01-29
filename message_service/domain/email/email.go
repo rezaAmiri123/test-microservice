@@ -3,14 +3,17 @@ package email
 import (
 	"context"
 	"github.com/rezaAmiri123/test-microservice/pkg/utils"
+	"time"
 )
 
 type Email struct {
-	UUID    string `json:"uuid"`
-	From    string `json:"from" validate:"required, email"`
-	To      string `json:"to" validate:"required, email"`
-	Subject string `json:"subject" validate:"required,min=3,max=250"`
-	Body    string `json:"body" validate:"required,min=3,max=250"`
+	UUID      string    `json:"uuid"`
+	From      string    `json:"from" validate:"required, email"`
+	To        []string  `json:"to" validate:"required, email"`
+	Subject   string    `json:"subject" validate:"required,min=3,max=250"`
+	Body      string    `json:"body" validate:"required"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // Validate validates fields of user model

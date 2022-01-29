@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package kafkaMessages;
+
+option go_package = "./;kafkaMessages";
+
+message Email {
+  string Subject = 1;
+  repeated  string To = 2;
+  string From = 3;
+  string Body = 4;
+}
+
+message CreateEmail{
+  Email email = 1;
+}

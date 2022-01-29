@@ -27,6 +27,12 @@ user_service_proto:
 		--go-grpc_out=user_service/proto/grpc --go-grpc_opt=paths=source_relative \
 		--proto_path=user_service/proto/grpc user_service/proto/grpc/users.proto
 
+message_service_proto:
+	protoc \
+		--go_out=message_service/proto/kafka --go_opt=paths=source_relative \
+		--go-grpc_out=message_service/proto/kafka --go-grpc_opt=paths=source_relative \
+		--proto_path=message_service/proto/kafka  message_service/proto/kafka/kafka.proto
+
 # ==============================================================================
 # Go migrate postgresql
 
