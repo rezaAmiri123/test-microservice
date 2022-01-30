@@ -60,7 +60,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=auth_db
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata3:/var/lib/postgresql/data
     networks: [ "microservices" ]
 
   jaeger:
@@ -153,7 +153,7 @@ volumes:
   data_container:
   kafka_volumes:
   zoo_volumes:
-  pgdata:
+  pgdata3:
 
 networks:
   microservices:

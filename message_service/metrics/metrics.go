@@ -18,7 +18,7 @@ type MessageServiceMetric struct {
 	ErrorKafkaMessages   prometheus.Counter
 }
 
-func NewUserServiceMetric(cfg *Config) *MessageServiceMetric {
+func NewMessageServiceMetric(cfg *Config) *MessageServiceMetric {
 	return &MessageServiceMetric{
 		//CreateArticleHttpRequests: promauto.NewCounter(prometheus.CounterOpts{
 		//	Name: fmt.Sprintf("%s_create_article_http_requests_total", cfg.ServiceName),

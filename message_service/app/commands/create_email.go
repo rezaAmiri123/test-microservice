@@ -20,6 +20,9 @@ func NewCreateUserHandler(repo email.Repository) *CreateEmailHandler {
 func (h CreateEmailHandler) Handle(ctx context.Context, e *email.Email) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "CreateEmailHandler.Handle")
 	defer span.Finish()
+	if err := e.SetUUID(); err != nil {
+		return err
+	}
 
 	if err := e.Validate(ctx); err != nil {
 		return err

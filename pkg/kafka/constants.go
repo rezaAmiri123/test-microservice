@@ -19,4 +19,6 @@ const (
 	writerMaxAttempts  = 3
 
 	CreateUserTopic = "CreateUser"
+
+	CreateEmailTopic = "CreateEmail"
 )

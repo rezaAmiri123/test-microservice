@@ -6,6 +6,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/rezaAmiri123/test-microservice/message_service/domain/email"
+	"strings"
 	"time"
 )
 
@@ -60,7 +61,7 @@ func (r *PGEmailRepository) Create(ctx context.Context, e *email.Email) error {
 		createEmail,
 		pgEmail.UUID,
 		pgEmail.From,
-		pgEmail.To,
+		strings.Join(pgEmail.To, ","),
 		pgEmail.Subject,
 		pgEmail.Body,
 	).Err(); err != nil {

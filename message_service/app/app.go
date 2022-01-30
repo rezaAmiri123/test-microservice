@@ -11,9 +11,9 @@ type Application struct {
 }
 
 type Queries struct {
-	GetArticleBySlug *queries.GetEmailBySlugHandler
+	GetEmailByUUID *queries.GetEmailByUUIDHandler
 }
 
 type Commands struct {
-	CreateArticle *commands.CreateEmailHandler
+	CreateEmail *commands.CreateEmailHandler
 }
