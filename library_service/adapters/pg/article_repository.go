@@ -69,7 +69,7 @@ func (r *PGArticleRepository) Create(ctx context.Context, article *article.Artic
 	).Err(); err != nil {
 		return errors.Wrap(err, "create article")
 	}
-
+	//).StructScan(pgArticle); err != nil {
 	// gormArticle := &GORMArticleModel{}
 	// gormArticle.protoGORMArticle(article)
 	// err := r.DB.Create(gormArticle).Error
