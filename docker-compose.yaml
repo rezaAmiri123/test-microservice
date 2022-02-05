@@ -63,6 +63,20 @@ services:
       - zoo1
       - kafka1
     networks: [ "microservices" ]
+  message_service:
+    container_name: message_service
+    build:
+      context: .
+      dockerfile: docker/message_service.Dockerfile
+    restart: always
+    depends_on:
+      - postgesql
+      - jaeger
+      - grafana
+      - prometheus
+      - zoo1
+      - kafka1
+    networks: [ "microservices" ]
 
   microservices_mysql:
     image: mysql:5.7
