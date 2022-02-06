@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	kafkaClient "github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
 	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
@@ -32,12 +33,13 @@ type Config struct {
 type Agent struct {
 	Config
 
-	logger      logger.Logger
-	metric      *metrics.UserServiceMetric
-	httpServer  *http.Server
-	grpcServer  *grpc.Server
-	repository  domain.Repository
-	Application *app.Application
+	logger        logger.Logger
+	kafkaProducer kafkaClient.Producer
+	metric        *metrics.UserServiceMetric
+	httpServer    *http.Server
+	grpcServer    *grpc.Server
+	repository    domain.Repository
+	Application   *app.Application
 
 	shutdown     bool
 	shutdowns    chan struct{}
@@ -53,11 +55,11 @@ func NewAgent(config Config) (*Agent, error) {
 	setupsFn := []func() error{
 		a.setupLogger,
 		a.setupMetric,
-
+		a.setupKafkaProducer,
 		//a.setupRepository,
 		a.setupTracing,
 		a.setupApplication,
-		a.setupKafka,
+		a.setupKafkaConsumer,
 		a.setupHttpServer,
 		a.setupGrpcServer,
 		//a.setupGRPCServer,

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	kafkamock "github.com/rezaAmiri123/test-microservice/pkg/kafka/mock"
 	"github.com/rezaAmiri123/test-microservice/user_service/app/command"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain/mock"
@@ -18,7 +19,8 @@ func TestCreateUserHandler_Handle(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mock.NewMockRepository(ctrl)
-	createUsrHandler := command.NewCreateUserHandler(repo)
+	producer := kafkamock.NewMockProducer(ctrl)
+	createUsrHandler := command.NewCreateUserHandler(repo, producer, nil)
 	user := &domain.User{
 		Username: "username",
 		Password: "password",
@@ -26,6 +28,7 @@ func TestCreateUserHandler_Handle(t *testing.T) {
 	}
 	ctx := context.Background()
 	repo.EXPECT().Create(gomock.Any(), gomock.Eq(user)).Return(nil)
+	producer.EXPECT().PublishMessage(gomock.Any(), gomock.Any()).Return(nil)
 	err := createUsrHandler.Handle(ctx, user)
 	require.NoError(t, err)
 }

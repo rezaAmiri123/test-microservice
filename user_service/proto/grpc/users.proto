@@ -2,7 +2,7 @@ syntax="proto3";
 
 package users;
 
-option go_package="github.com/rezaAmiri123/test-test-microservice/user_service";
+option go_package="github.com/rezaAmiri123/test-microservice/user_service/proto/grpc";
 
 service UsersService {
   rpc Login(LoginRequest) returns (LoginResponse){}

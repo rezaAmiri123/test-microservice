@@ -14,10 +14,10 @@ func (a *Agent) setupApplication() error {
 	}
 	application := &app.Application{
 		Commands: app.Commands{
-			CreateUser: command.NewCreateUserHandler(repo),
+			CreateUser: command.NewCreateUserHandler(repo, a.kafkaProducer, a.logger),
 		},
 		Queries: app.Queries{
-			GetProfile: query.NewGetProfileHandler(repo),
+			GetProfile:   query.NewGetProfileHandler(repo),
 			GetUserToken: query.NewGetUserTokenHandler(repo),
 		},
 	}

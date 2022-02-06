@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package kafkaMessages;
+package kafkaMessage;
 
-option go_package = "./;kafkaMessages";
+option go_package="github.com/rezaAmiri123/test-microservice/user_service/proto/kafka";
 
 //	UUID     string `json:"uuid"`
 //	Username string `json:"username" validate:"required,min=6,max=30"`

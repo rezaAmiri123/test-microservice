@@ -25,7 +25,7 @@ func TestGRPCServer(t *testing.T) {
 		config *server.Config,
 		repo *mock.MockRepository,
 	){
-		"login test": testGrpcLoginUser,
+		"login test":   testGrpcLoginUser,
 		"verify token": testGrpcServer_VerifyTokenUser,
 	} {
 		t.Run(scenario, func(t *testing.T) {
@@ -49,7 +49,7 @@ func setupGRPCServerTest(t *testing.T, fn func(config *server.Config)) (
 	repo = mock.NewMockRepository(ctrl)
 	application := &app.Application{
 		Commands: app.Commands{
-			CreateUser: command.NewCreateUserHandler(repo),
+			CreateUser: command.NewCreateUserHandler(repo, nil, nil),
 		},
 		Queries: app.Queries{
 			GetProfile:   query.NewGetProfileHandler(repo),
@@ -103,7 +103,7 @@ func testGrpcServer_VerifyTokenUser(t *testing.T, client serverproto.UsersServic
 	user := &domain.User{
 		Username: "username",
 		Password: "password",
-		Email: "email@example.com",
+		Email:    "email@example.com",
 	}
 	//err := application.Commands.CreateUser.Handle(ctx, want)
 	//require.NoError(t,err)
@@ -114,9 +114,9 @@ func testGrpcServer_VerifyTokenUser(t *testing.T, client serverproto.UsersServic
 	})
 	require.NoError(t, err)
 	repo.EXPECT().GetByUsername(gomock.Any(), user.Username).Return(user, nil)
-	got ,err :=client.VerifyToken(ctx, &serverproto.VerifyTokenRequest{
+	got, err := client.VerifyToken(ctx, &serverproto.VerifyTokenRequest{
 		Token: token.GetToken(),
 	})
-	require.NoError(t,err)
-	require.Equal(t,got.Username,user.Username)
+	require.NoError(t, err)
+	require.Equal(t, got.Username, user.Username)
 }

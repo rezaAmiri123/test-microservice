@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package kafkaMessages;
 
-option go_package = "./;kafkaMessages";
+option go_package="github.com/rezaAmiri123/test-microservice/message_service/proto/kafka";
 
 message Email {
   string Subject = 1;

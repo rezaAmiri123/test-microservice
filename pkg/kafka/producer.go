@@ -1,3 +1,4 @@
+//go:generate mockgen -source producer.go -destination mock/producer.go -package mock
 package kafka
 
 import (
