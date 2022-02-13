@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/rezaAmiri123/test-microservice/library_service/agent"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth/tls"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -33,6 +34,7 @@ type cli struct {
 
 type cfg struct {
 	agent.Config
+	AuthGrpcClientTLSConfig tls.TLSConfig
 }
 
 func setupFlags(cmd *cobra.Command) error {
@@ -58,6 +60,10 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().StringSlice("kafka-service-brokers", []string{"kafka1:9092"}, "kafka service brokers")
 	cmd.Flags().String("kafka-service-group-id", "library_microservice_consumer", "metric service host port")
 	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
+
+	cmd.Flags().String("auth-grpc-client-tls-cert-file", "", "Path to server tls cert.")
+	cmd.Flags().String("auth-grpc-client-tls-key-file", "", "Path to server tls key.")
+	cmd.Flags().String("auth-grpc-client-tls-ca-file", "", "Path to server certificate authority.")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -100,6 +106,22 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	// c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
 
 	// c.cfg.KafkaConfig.KafkaTopics.UserCreate.TopicName = kafka.CreateUserTopic
+
+	c.cfg.AuthGrpcClientTLSConfig.CertFile = viper.GetString("auth-grpc-client-tls-cert-file")
+	c.cfg.AuthGrpcClientTLSConfig.KeyFile = viper.GetString("auth-grpc-client-tls-key-file")
+	c.cfg.AuthGrpcClientTLSConfig.CAFile = viper.GetString("auth-grpc-client-tls-ca-file")
+
+	if c.cfg.AuthGrpcClientTLSConfig.CertFile != "" &&
+		c.cfg.AuthGrpcClientTLSConfig.KeyFile != "" {
+		c.cfg.AuthGrpcClientTLSConfig.Server = true
+		c.cfg.Config.GRPCAuthClientTLSConfig, err = tls.SetupTLSConfig(
+			c.cfg.AuthGrpcClientTLSConfig,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

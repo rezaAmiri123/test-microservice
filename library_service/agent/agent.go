@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"crypto/tls"
 	"github.com/rezaAmiri123/test-microservice/pkg/db/postgres"
 	"io"
 	"net/http"
@@ -18,12 +19,13 @@ import (
 )
 
 type Config struct {
-	HttpServerAddr     string
-	HttpServerPort     int
-	GRPCServerAddr     string
-	GRPCServerPort     int
-	GRPCAuthClientAddr string
-	GRPCAuthClientPort int
+	HttpServerAddr          string
+	HttpServerPort          int
+	GRPCServerAddr          string
+	GRPCServerPort          int
+	GRPCAuthClientAddr      string
+	GRPCAuthClientPort      int
+	GRPCAuthClientTLSConfig *tls.Config
 
 	//DBConfig     adapters.GORMConfig
 	DBConfig     postgres.Config

@@ -2,11 +2,11 @@ package agent
 
 import (
 	"fmt"
-	"net"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
+	"net"
+
 	grpcervice "github.com/rezaAmiri123/test-microservice/user_service/ports/grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

@@ -6,8 +6,8 @@ import (
 )
 
 func (a *Agent) setupHttpServer() error {
-	httpAddress := fmt.Sprintf("%s:%d", a.Config.HttpServerAddr,a.Config.HttpServerPort)
-	httpServer, err := http.NewHttpServer(httpAddress, a.Application,a.metric)
+	httpAddress := fmt.Sprintf("%s:%d", a.Config.HttpServerAddr, a.Config.HttpServerPort)
+	httpServer, err := http.NewHttpServer(httpAddress, a.Application, a.metric)
 	if err != nil {
 		return err
 	}

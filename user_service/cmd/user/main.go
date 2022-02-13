@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/rezaAmiri123/test-microservice/pkg/auth/tls"
+	"github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/rezaAmiri123/test-microservice/user_service/agent"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,6 +35,7 @@ type cli struct {
 
 type cfg struct {
 	agent.Config
+	GrpcServerTLSConfig tls.TLSConfig
 }
 
 func setupFlags(cmd *cobra.Command) error {
@@ -59,6 +61,10 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().StringSlice("kafka-service-brokers", []string{"kafka1:9092"}, "kafka service brokers")
 	cmd.Flags().String("kafka-service-group-id", "user_microservice_consumer", "metric service host port")
 	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
+
+	cmd.Flags().String("grpc-server-tls-cert-file", "", "Path to server tls cert.")
+	cmd.Flags().String("grpc-server-tls-key-file", "", "Path to server tls key.")
+	cmd.Flags().String("grpc-server-tls-ca-file", "", "Path to server certificate authority.")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -97,8 +103,23 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.KafkaConfig.Kafka.Brokers = viper.GetStringSlice("kafka-service-brokers")
 	c.cfg.KafkaConfig.Kafka.GroupID = viper.GetString("kafka-service-group-id")
 	c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
+	c.cfg.GrpcServerTLSConfig.CertFile = viper.GetString("grpc-server-tls-cert-file")
+	c.cfg.GrpcServerTLSConfig.KeyFile = viper.GetString("grpc-server-tls-key-file")
+	c.cfg.GrpcServerTLSConfig.CAFile = viper.GetString("grpc-server-tls-ca-file")
 
 	c.cfg.KafkaConfig.KafkaTopics.UserCreate.TopicName = kafka.CreateUserTopic
+
+	if c.cfg.GrpcServerTLSConfig.CertFile != "" &&
+		c.cfg.GrpcServerTLSConfig.KeyFile != "" {
+		c.cfg.GrpcServerTLSConfig.Server = true
+		c.cfg.Config.ServerTLSConfig, err = tls.SetupTLSConfig(
+			c.cfg.GrpcServerTLSConfig,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
