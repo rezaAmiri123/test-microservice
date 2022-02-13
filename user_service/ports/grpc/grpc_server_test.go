@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/golang/mock/gomock"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth/tls"
 	"github.com/rezaAmiri123/test-microservice/user_service/app"
 	"github.com/rezaAmiri123/test-microservice/user_service/app/command"
 	"github.com/rezaAmiri123/test-microservice/user_service/app/query"
@@ -14,8 +15,17 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/travisjeffery/go-dynaport"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"net"
 	"testing"
+)
+
+var (
+	CAFile         = tls.ConfigFile("ca.pem")
+	ServerCertFile = tls.ConfigFile("server.pem")
+	ServerKeyFile  = tls.ConfigFile("server-key.pem")
+	ClientCertFile = tls.ConfigFile("client.pem")
+	ClientKeyFile  = tls.ConfigFile("client-key.pem")
 )
 
 func TestGRPCServer(t *testing.T) {
@@ -61,15 +71,33 @@ func setupGRPCServerTest(t *testing.T, fn func(config *server.Config)) (
 	bindAddr := fmt.Sprintf("%s:%d", "127.0.0.1", httpPorts[0])
 	serverConfig := server.Config{application}
 	var opts []grpc.ServerOption
-
+	serverTLSConfig, err := tls.SetupTLSConfig(tls.TLSConfig{
+		CAFile:   CAFile,
+		CertFile: ServerCertFile,
+		KeyFile:  ServerKeyFile,
+		Server:   true,
+	})
+	require.NoError(t, err)
+	serverCreds := credentials.NewTLS(serverTLSConfig)
+	opts = append(opts, grpc.Creds(serverCreds))
 	grpcServer, err := server.NewGRPCServer(&serverConfig, opts...)
 	ln, err := net.Listen("tcp", bindAddr)
 	require.NoError(t, err)
 	go func() {
 		grpcServer.Serve(ln)
 	}()
+	clientTLSCofig, err := tls.SetupTLSConfig(tls.TLSConfig{
+		CAFile:   CAFile,
+		CertFile: ClientCertFile,
+		KeyFile:  ClientKeyFile,
+	})
+	require.NoError(t, err)
+	clientCreds := credentials.NewTLS(clientTLSCofig)
 
-	clientOptions := []grpc.DialOption{grpc.WithInsecure()}
+	clientOptions := []grpc.DialOption{
+		//grpc.WithInsecure(),
+		grpc.WithTransportCredentials(clientCreds),
+	}
 	cc, err := grpc.Dial(bindAddr, clientOptions...)
 	require.NoError(t, err)
 	client = serverproto.NewUsersServiceClient(cc)

@@ -2,6 +2,11 @@ package agent
 
 import (
 	"context"
+	"crypto/tls"
+	"io"
+	"net/http"
+	"sync"
+
 	kafkaClient "github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
@@ -12,12 +17,12 @@ import (
 	"github.com/rezaAmiri123/test-microservice/user_service/metrics"
 	kafkatopics "github.com/rezaAmiri123/test-microservice/user_service/ports/kafka"
 	"google.golang.org/grpc"
-	"io"
-	"net/http"
-	"sync"
 )
 
 type Config struct {
+	ServerTLSConfig *tls.Config
+	PeerTLSConfig   *tls.Config
+
 	HttpServerAddr string
 	HttpServerPort int
 	GRPCServerAddr string
