@@ -31,8 +31,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Install packages
-        run: go install github.com/cloudflare/cfssl/cmd/cfssl@v1.4.1 \
-                github.com/cloudflare/cfssl/cmd/cfssljson@v1.4.1
+        run: go install github.com/cloudflare/cfssl/cmd/cfssl@v1.4.1
+      - name: Install packages
+        run: go install github.com/cloudflare/cfssl/cmd/cfssljson@v1.4.1
       - name: Make certificstes
         run: make init && make gencert
       - name: Test
