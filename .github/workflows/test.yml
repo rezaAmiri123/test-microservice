@@ -30,7 +30,10 @@ jobs:
           go-version: '1.17.x'
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Test
+      - name: Install packages
+        run: go install github.com/cloudflare/cfssl/cmd/cfssl@v1.4.1 \
+                github.com/cloudflare/cfssl/cmd/cfssljson@v1.4.1
+      - name: Make certificstes
         run: make init && make gencert
       - name: Test
         run: go test ./...
