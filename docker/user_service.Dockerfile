@@ -1,39 +1,37 @@
-FROM golang:1.17-alpine
+# FROM golang:1.17-alpine
+# 
+# WORKDIR /app
+# 
+# ENV CONFIG=docker
+# 
+# COPY . /app
+# RUN apk add bash
+# RUN go get github.com/githubnemo/CompileDaemon
+# RUN go mod vendor
+# 
+# 
+# ENTRYPOINT CompileDaemon --build="go build -o main user_service/cmd/user/main.go" --command=./main
+
+
+
+FROM golang:1.17-buster AS build
 
 WORKDIR /app
 
-ENV CONFIG=docker
-
 COPY . /app
-RUN apk add bash
-RUN go get github.com/githubnemo/CompileDaemon
-RUN go mod vendor
+RUN go mod download
 
-
-ENTRYPOINT CompileDaemon --build="go build -o main user_service/cmd/user/main.go" --command=./main
-
-
-
-#FROM golang:1.17-buster AS build
-
-#WORKDIR /app
-#
-#COPY . /app
-#RUN go mod download
-#
-#RUN cd user_service/cmd/user && go build -o /docker-gs-ping && cd  ../../..
-#
-###
-### Deploy
-###
-##FROM gcr.io/distroless/base-debian10
-#FROM ellerbrock/alpine-bash-curl-ssl
-#WORKDIR /
-#
-#COPY --from=build /docker-gs-ping /docker-gs-ping
-#
-##EXPOSE 8080
+RUN CGO_ENABLED=0 go build -o main user_service/cmd/user/main.go
+## Deploy
 ##
-##USER nonroot:nonroot
+#FROM gcr.io/distroless/base-debian10
+FROM ellerbrock/alpine-bash-curl-ssl
+WORKDIR /
+
+COPY --from=build /app/main /main
+
+#EXPOSE 8080
 #
-#ENTRYPOINT ["/docker-gs-ping"]
+#USER nonroot:nonroot
+
+ENTRYPOINT ["/main"]

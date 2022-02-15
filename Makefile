@@ -37,6 +37,10 @@ local_down:
 	@echo Stoping local docker compose
 	docker-compose -f docker-compose-local.yaml down
 
+make_user_service_image:
+	docker build -f docker/user_service.Dockerfile -t reza879/user_service:$(git rev-parse --short HEAD) .
+	docker push reza879/user_service:$(git rev-parse --short HEAD)
+
 test_coverage:
 	go test --cover ./...
 
