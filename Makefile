@@ -77,3 +77,7 @@ migrate_down:
 	migrate -database postgres://postgres:postgres@localhost:5432/auth_db?sslmode=disable -path migrations down 1
 
 
+#=====================================================
+# kuberneties
+k8s_install:
+	helm install test-microservice deploy/test-microservice/
