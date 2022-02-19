@@ -1,4 +1,18 @@
-we have a user service that handles the user work like register and login
+Hi everyone<br/> 
+This is a test project about implementing a library <br/>
+There are three services here <br/>
+user service that going to handle user<br/> 
+library service and message service <br/>
+some technologies have been used in this project<br/>
+
+[Kafka](https://github.com/segmentio/kafka-go) as messages broker<br/>
+[gRPC](https://github.com/grpc/grpc-go) Go implementation of gRPC<br/>
+[PostgreSQL](https://github.com/jackc/pgx) as database<br/>
+[Jaeger](https://www.jaegertracing.io/) open source, end-to-end distributed <br/>
+[tracing](https://opentracing.io/) tracing<br/>
+[Prometheus](https://prometheus.io/) monitoring and alerting<br/>
+[Redis](https://github.com/go-redis/redis) Type-safe Redis client for Golang<br/>
+[Echo](https://github.com/labstack/echo) web framework<br/>
 
 
 ### Jaeger UI:
@@ -9,17 +23,22 @@ http://localhost:16686
 
 http://localhost:9090
 
-### Grafana UI:
-
-http://localhost:3000
-
-### Swagger UI:
-
-http://localhost:5001/swagger/index.html
 
 ```text
 .
+├── deploy
+│   └── test-microservice
+│       ├── Chart.yaml
+│       ├── templates
+│       │   ├── deployment.yaml
+│       │   ├── _helpers.tpl
+│       │   ├── NOTES.txt
+│       │   └── tests
+│       │       └── test-connection.yaml
+│       └── values.yaml
 ├── docker
+│   ├── library_service.Dockerfile
+│   ├── message_service.Dockerfile
 │   └── user_service.Dockerfile
 ├── docker-compose-local.yaml
 ├── docker-compose.yaml
@@ -30,6 +49,7 @@ http://localhost:5001/swagger/index.html
 │   │   ├── article_gorm_repository.go
 │   │   └── pg
 │   │       ├── article_repository.go
+│   │       ├── article_repository_test.go
 │   │       └── sql_queries.go
 │   ├── agent
 │   │   ├── agent.go
@@ -61,6 +81,45 @@ http://localhost:5001/swagger/index.html
 │           ├── http_handlers.go
 │           └── http_server.go
 ├── Makefile
+├── message_service
+│   ├── adapters
+│   │   └── pg
+│   │       ├── email_repository.go
+│   │       └── sql_queries.go
+│   ├── agent
+│   │   ├── agent.go
+│   │   ├── application.go
+│   │   ├── kafka.go
+│   │   ├── logger.go
+│   │   ├── mertic.go
+│   │   └── tracing.go
+│   ├── app
+│   │   ├── app.go
+│   │   ├── commands
+│   │   │   └── create_email.go
+│   │   └── queries
+│   │       └── get_email_by_slug.go
+│   ├── cmd
+│   │   └── message
+│   │       └── main.go
+│   ├── domain
+│   │   └── email
+│   │       ├── email.go
+│   │       ├── mock
+│   │       │   └── repository.go
+│   │       └── repository.go
+│   ├── metrics
+│   │   └── metrics.go
+│   ├── ports
+│   │   └── kafka
+│   │       ├── config.go
+│   │       ├── consumer_group.go
+│   │       ├── create_email_consumer.go
+│   │       └── utils.go
+│   └── proto
+│       └── kafka
+│           ├── kafka.pb.go
+│           └── kafka.proto
 ├── migrations
 │   ├── 01_create_initial_tables.down.sql
 │   └── 01_create_initial_tables.up.sql
@@ -69,7 +128,11 @@ http://localhost:5001/swagger/index.html
 ├── pkg
 │   ├── auth
 │   │   ├── auth.go
-│   │   └── middleware.go
+│   │   ├── authorize.go
+│   │   ├── middleware.go
+│   │   └── tls
+│   │       ├── files.go
+│   │       └── tls.go
 │   ├── converter
 │   │   └── converter.go
 │   ├── db
@@ -80,6 +143,8 @@ http://localhost:5001/swagger/index.html
 │   │   ├── config.go
 │   │   ├── constants.go
 │   │   ├── consumer_group.go
+│   │   ├── mock
+│   │   │   └── producer.go
 │   │   ├── producer.go
 │   │   ├── reader.go
 │   │   └── writer.go
@@ -98,7 +163,15 @@ http://localhost:5001/swagger/index.html
 │   ├── kafka1
 │   │   ├── consumer.go
 │   │   └── producer.go
-│   └── main.go
+│   ├── main.go
+│   └── message_example
+│       └── producer.go
+├── tls
+│   ├── ca-config.json
+│   ├── ca-csr.json
+│   ├── client-csr.json
+│   ├── keys
+│   └── server-csr.json
 └── user_service
     ├── adapters
     │   ├── user_gorm_repository.go
@@ -153,7 +226,6 @@ http://localhost:5001/swagger/index.html
         │   ├── users.pb.go
         │   └── users.proto
         └── kafka
-            ├── kafka.pb.go
-            └── kafka.proto
-
+            ├── user_kafka.pb.go
+            └── user_kafka.proto
 ```
