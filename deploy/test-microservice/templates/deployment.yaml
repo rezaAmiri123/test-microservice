@@ -59,13 +59,19 @@ spec:
       labels:
         app: user
     spec:
+      initContainers:
+        - name: init-mydb
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nslookup mysql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mysql; sleep 2; done" ]
       containers:
         - name: user
+#          image: nginx:1.16
           image: reza879/user_service:0afbeb5
           ports:
+#            - containerPort: 8080
             - containerPort: 8180
           env:
-            - name: database-host
+            - name: DATABASE_HOST
               value: mysql
 ---
 apiVersion: v1
