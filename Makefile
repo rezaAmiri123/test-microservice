@@ -81,3 +81,9 @@ migrate_down:
 # kuberneties
 k8s_install:
 	helm install test-microservice deploy/test-microservice/
+
+k8s_update:
+	helm upgrade test-microservice deploy/test-microservice/
+
+k8s_uninstall:
+	helm uninstall test-microservice deploy/test-microservice/

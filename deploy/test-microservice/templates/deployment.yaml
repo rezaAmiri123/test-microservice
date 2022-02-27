@@ -1,23 +1,81 @@
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: user-service-deployment
+#  labels:
+#    app: user-service
+#spec:
+#  replicas: 3
+#  selector:
+#    matchLabels:
+#      app: user-service
+#  template:
+#    metadata:
+#      labels:
+#        app: user-service
+#    spec:
+#      containers:
+#      - name: user-service
+#        image: radis
+#        #image: reza879/user_service:latest
+#        ports:
+#        - containerPort: 6379
+#
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: nginx-deployment
+#  labels:
+#    app: nginx
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: nginx
+#  template:
+#    metadata:
+#      labels:
+#        app: nginx
+#    spec:
+#      containers:
+#        - name: nginx
+#          image: nginx:1.16
+#          ports:
+#            - containerPort: 8080
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service-deployment
+  name: user-deployment
   labels:
-    app: user-service
+    app: user
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: user-service
+      app: user
   template:
     metadata:
       labels:
-        app: user-service
+        app: user
     spec:
       containers:
-      - name: user-service
-        image: radis
-        #image: reza879/user_service:latest
-        ports:
-        - containerPort: 6379
-
+        - name: user
+          image: reza879/user_service:0afbeb5
+          ports:
+            - containerPort: 8180
+          env:
+            - name: database-host
+              value: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user
+  ports:
+    - protocol: TCP
+      port: 8180
+      targetPort: 8180
