@@ -84,6 +84,8 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	viper.AutomaticEnv()
+
 	c.cfg.HttpServerAddr = viper.GetString("http-server-addr")
 	c.cfg.HttpServerPort = viper.GetInt("http-server-port")
 	c.cfg.GRPCServerAddr = viper.GetString("grpc-server-addr")
