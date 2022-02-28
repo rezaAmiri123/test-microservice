@@ -94,7 +94,7 @@ services:
       - '3306'
     volumes:
       - data_container:/var/lib/mysql
-    hostname: db.local
+    hostname: mysql
     networks: [ "microservices" ]
 
   postgesql:
