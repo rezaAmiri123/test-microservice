@@ -4,10 +4,14 @@ metadata:
   name: mysql
 spec:
   ports:
-    - port: 3306
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+      # nodePort: 30000
+  # type: NodePort
   selector:
     app: mysql
-  clusterIP: None
+  # type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment

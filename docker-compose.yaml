@@ -17,8 +17,8 @@ services:
 #    volumes:
 #      - ./:/app
     restart: always
-#    environment:
-#      - POSTGRES_HOST=host.docker.internal
+    environment:
+      - database-test=host.docker.internal_TEST
 #      - POSTGRES_PORT=5432
 #      - REDIS_ADDR=host.docker.internal:6379
 #      - MONGO_URI=mongodb://host.docker.internal:27017
@@ -30,7 +30,7 @@ services:
       - grafana
       - prometheus
       - zoo1
-      - kafka1
+      - kafka
     networks: [ "microservices" ]
 
   library_service:
@@ -61,7 +61,7 @@ services:
       - grafana
       - prometheus
       - zoo1
-      - kafka1
+      - kafka
     networks: [ "microservices" ]
   message_service:
     container_name: message_service
@@ -75,7 +75,7 @@ services:
       - grafana
       - prometheus
       - zoo1
-      - kafka1
+      - kafka
     networks: [ "microservices" ]
 
   microservices_mysql:
@@ -162,15 +162,15 @@ services:
       - zoo_volumes:/data
       - zoo_volumes:/datalog
     networks: [ "microservices" ]
-  kafka1:
+  kafka:
     image: confluentinc/cp-kafka:5.5.1
     restart: always
-    hostname: kafka1
+    hostname: kafka
     ports:
       - "9092:9092"
       - "9999:9999"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka1}:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-kafka}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
@@ -180,7 +180,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_JMX_PORT: 9999
-      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-kafka1}
+      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-kafka}
     volumes:
       - kafka_volumes:/var/lib/kafka/data
     depends_on:
