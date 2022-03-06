@@ -73,6 +73,15 @@ spec:
           env:
             - name: DATABASE_HOST
               value: mysql
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8002
+              httpHeaders:
+                - name: Custom-Header
+                  value: Awesome
+            initialDelaySeconds: 10
+            periodSeconds: 3
 ---
 apiVersion: v1
 kind: Service

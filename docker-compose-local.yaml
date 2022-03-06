@@ -31,9 +31,9 @@ services:
 #      - kafka
 #    networks: [ "microservices" ]
 
-  microservices_mysql:
+  mysql:
     image: mysql:5.7
-    container_name: microservices_mysql
+    container_name: mysql
     restart: always
     environment:
       MYSQL_DATABASE: 'go'

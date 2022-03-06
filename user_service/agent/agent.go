@@ -23,10 +23,11 @@ type Config struct {
 	ServerTLSConfig *tls.Config
 	PeerTLSConfig   *tls.Config
 
-	HttpServerAddr string
-	HttpServerPort int
-	GRPCServerAddr string
-	GRPCServerPort int
+	HttpServerAddr              string
+	HttpServerPort              int
+	GRPCServerAddr              string
+	GRPCServerPort              int
+	HttpKeepAliveServerHostPort string
 
 	DBConfig     adapters.GORMConfig
 	LoggerConfig applogger.Config
@@ -64,6 +65,7 @@ func NewAgent(config Config) (*Agent, error) {
 		//a.setupRepository,
 		a.setupTracing,
 		a.setupApplication,
+		a.setupKeepAlive,
 		a.setupKafkaConsumer,
 		a.setupHttpServer,
 		a.setupGrpcServer,
