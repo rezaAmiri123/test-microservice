@@ -3,9 +3,8 @@ package http
 import (
 	"net/http"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/metrics"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
@@ -43,6 +42,8 @@ func NewHttpServer(addr string, application *app.Application, metric *metrics.Ar
 
 func newEchoRouter(httpServer *HttpServer) *echo.Echo {
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 	v1 := e.Group("/api/v1")
 	articleGroup := v1.Group("/articles")
 	articleGroup.POST("/create", httpServer.CreateArticle())
@@ -50,18 +51,18 @@ func newEchoRouter(httpServer *HttpServer) *echo.Echo {
 	return e
 }
 
-func setMiddlewares(router *chi.Mux) {
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RealIP)
-	//router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
-	router.Use(middleware.Recoverer)
+// func setMiddlewares(router *chi.Mux) {
+// 	router.Use(middleware.RequestID)
+// 	router.Use(middleware.RealIP)
+// 	//router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
+// 	router.Use(middleware.Recoverer)
 
-	//addCorsMiddleware(router)
-	//addAuthMiddleware(router)
+// 	//addCorsMiddleware(router)
+// 	//addAuthMiddleware(router)
 
-	router.Use(
-		middleware.SetHeader("X-Content-Type-Options", "nosniff"),
-		middleware.SetHeader("X-Frame-Options", "deny"),
-	)
-	router.Use(middleware.NoCache)
-}
+// 	router.Use(
+// 		middleware.SetHeader("X-Content-Type-Options", "nosniff"),
+// 		middleware.SetHeader("X-Frame-Options", "deny"),
+// 	)
+// 	router.Use(middleware.NoCache)
+// }
