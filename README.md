@@ -32,6 +32,8 @@ http://localhost:9090
 │       ├── templates
 │       │   ├── deployment.yaml
 │       │   ├── _helpers.tpl
+│       │   ├── mysql-deployment.yaml
+│       │   ├── mysql-py.yaml
 │       │   ├── NOTES.txt
 │       │   └── tests
 │       │       └── test-connection.yaml
@@ -78,7 +80,8 @@ http://localhost:9090
 │   │   └── metrics.go
 │   └── ports
 │       └── http
-│           ├── http_handlers.go
+│           ├── create_aricle.go
+│           ├── get_article_by_slug.go
 │           └── http_server.go
 ├── Makefile
 ├── message_service
@@ -180,6 +183,7 @@ http://localhost:9090
     ├── agent
     │   ├── agent.go
     │   ├── application.go
+    │   ├── check_alive.go
     │   ├── grpc_server.go
     │   ├── http_server.go
     │   ├── kafka.go
