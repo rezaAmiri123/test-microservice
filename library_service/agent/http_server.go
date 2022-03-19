@@ -7,13 +7,13 @@ import (
 
 func (a *Agent) setupHttpServer() error {
 	httpAddress := fmt.Sprintf("%s:%d", a.Config.HttpServerAddr, a.Config.HttpServerPort)
-	httpServer, err := http.NewHttpServer(httpAddress, a.Application, a.metric, a.AuthClient)
+	echoServer, err := http.NewHttpServer(httpAddress, a.Application, a.metric, a.AuthClient)
 	if err != nil {
 		return err
 	}
-	a.httpServer = httpServer
+	a.httpServer = echoServer
 	go func() {
-		if err := a.httpServer.ListenAndServe(); err != nil {
+		if err := a.httpServer.Start(httpAddress); err != nil {
 			_ = a.Shutdown()
 		}
 	}()

@@ -3,9 +3,9 @@ package agent
 import (
 	"context"
 	"crypto/tls"
+	"github.com/labstack/echo/v4"
 	"github.com/rezaAmiri123/test-microservice/pkg/db/postgres"
 	"io"
-	"net/http"
 	"sync"
 
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
@@ -39,7 +39,7 @@ type Agent struct {
 
 	logger      logger.Logger
 	metric      *metrics.ArticleServiceMetric
-	httpServer  *http.Server
+	httpServer  *echo.Echo
 	grpcServer  *grpc.Server
 	repository  domain.Repository
 	Application *app.Application
