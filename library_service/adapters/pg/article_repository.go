@@ -84,7 +84,7 @@ func (r *PGArticleRepository) GetBySlug(ctx context.Context, slug string) (*arti
 
 	articleModel := &PGArticleModel{}
 	if err := r.DB.GetContext(ctx, articleModel, getArticleBySlug, slug); err != nil {
-		return nil, errors.Wrap(err, "newsRepo.GetNewsByID.GetContext")
+		return nil, errors.Wrap(err, "PGArticleRepository.GetBySlug.GetContext")
 	}
 	return articleModel.protoDomainArticle(), nil
 }

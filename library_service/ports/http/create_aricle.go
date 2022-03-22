@@ -1,30 +1,37 @@
 package http
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/rezaAmiri123/test-microservice/library_service/domain/article"
-	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/opentracing/opentracing-go"
+	"github.com/rezaAmiri123/test-microservice/library_service/ports/dto"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 )
 
 func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		a := &article.Article{}
+		h.metric.CreateArticleHttpRequests.Inc()
+
+		span, ctx := opentracing.StartSpanFromContext(c.Request().Context(), "HttpServer.CreateArticle")
+		defer span.Finish()
+
+		req := &dto.CreateArticleRequest{}
 		//if err := json.NewDecoder(c.Request().Body).Decode(a); err != nil {
 		//	// http.Error(w, err.Error(), http.StatusBadRequest)
 		//	return c.JSON(http.StatusBadRequest, err.Error())
 		//}
-		if err := c.Bind(a); err != nil {
+		if err := c.Bind(req); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
-		u, err := h.authClient.VerityToken(c.Request().Context(), auth.GetTokenFromHeader(c.Request()))
+		u, err := h.authClient.VerityToken(ctx, auth.GetTokenFromHeader(c.Request()))
 		if err != nil {
 			// http.Error(w, err.Error(), http.StatusBadRequest)
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		if err := h.app.Commands.CreateArticle.Handle(c.Request().Context(), a, u.UUID); err != nil {
+		if err := h.app.Commands.CreateArticle.Handle(ctx, req.MapToArticle(), u.UUID); err != nil {
 			// http.Error(w, err.Error(), http.StatusInternalServerError)
 			return c.JSON(http.StatusInternalServerError, err.Error())
 		}
