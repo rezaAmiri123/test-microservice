@@ -3,7 +3,7 @@ package agent
 import (
 	"fmt"
 
-	"github.com/rezaAmiri123/test-microservice/pkg/auth"
+	auth "github.com/rezaAmiri123/test-microservice/pkg/auth/auth_client"
 	UserApi "github.com/rezaAmiri123/test-microservice/user_service/proto/grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

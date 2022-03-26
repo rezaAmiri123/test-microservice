@@ -32,16 +32,16 @@ func NewHttpServer(addr string, application *app.Application, metric *metrics.Ar
 	//}, nil
 }
 
-func newEchoRouter(httpServer *HttpServer) *echo.Echo {
-	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	v1 := e.Group("/api/v1")
-	articleGroup := v1.Group("/articles")
-	articleGroup.POST("/create", httpServer.CreateArticle())
-	articleGroup.GET("/article/:slug", httpServer.GetBySlug())
-	return e
-}
+//func newEchoRouter(httpServer *HttpServer) *echo.Echo {
+//	e := echo.New()
+//	e.Use(middleware.Logger())
+//	e.Use(middleware.Recover())
+//	v1 := e.Group("/api/v1")
+//	articleGroup := v1.Group("/articles")
+//	articleGroup.POST("/create", httpServer.CreateArticle())
+//	articleGroup.GET("/article/:slug", httpServer.GetBySlug())
+//	return e
+//}
 
 // func setMiddlewares(router *chi.Mux) {
 // 	router.Use(middleware.RequestID)
