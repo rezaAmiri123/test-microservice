@@ -17,26 +17,23 @@ func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 		defer span.Finish()
 
 		req := &dto.CreateArticleRequest{}
-		//if err := json.NewDecoder(c.Request().Body).Decode(a); err != nil {
-		//	// http.Error(w, err.Error(), http.StatusBadRequest)
-		//	return c.JSON(http.StatusBadRequest, err.Error())
-		//}
 		if err := c.Bind(req); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		if err := req.Validate(); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
 		u, err := h.authClient.VerityToken(ctx, auth.GetTokenFromHeader(c.Request()))
 		if err != nil {
 			// http.Error(w, err.Error(), http.StatusBadRequest)
-			return c.JSON(http.StatusBadRequest, err.Error())
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
 		if err := h.app.Commands.CreateArticle.Handle(ctx, req.MapToArticle(), u.UUID); err != nil {
 			// http.Error(w, err.Error(), http.StatusInternalServerError)
-			return c.JSON(http.StatusInternalServerError, err.Error())
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
-		// w.WriteHeader(http.StatusOK)
-		h.metric.CreateArticleHttpRequests.Inc()
 		return c.JSON(http.StatusOK, nil)
 	}
 }

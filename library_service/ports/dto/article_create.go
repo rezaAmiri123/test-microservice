@@ -1,6 +1,7 @@
 package dto
 
 import (
+	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/rezaAmiri123/test-microservice/library_service/domain/article"
 )
 
@@ -20,4 +21,11 @@ func (a CreateArticleRequest) MapToArticle() *article.Article {
 		Description: a.Description,
 		Body:        a.Body,
 	}
+}
+
+func (a CreateArticleRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Title, validation.Required),
+		validation.Field(&a.Body, validation.Required),
+	)
 }
