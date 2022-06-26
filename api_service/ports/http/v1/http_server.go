@@ -22,15 +22,13 @@ type HttpServer struct {
 func NewHttpServer(
 	application *app.Application,
 	metrics *metrics.ApiServiceMetric,
-	authClient auth.AuthClient,
 	log logger.Logger,
 ) (*echo.Echo, error) {
 	httpServer := &HttpServer{
-		app:        application,
-		metrics:    metrics,
-		authClient: authClient,
-		validate:   validator.New(),
-		log:        log,
+		app:      application,
+		metrics:  metrics,
+		validate: validator.New(),
+		log:      log,
 	}
 	//router := newEchoRouter(httpServer)
 	e := echo.New()
