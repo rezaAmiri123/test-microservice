@@ -57,8 +57,8 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("metric-service-name", "api_service", "metric service name")
 	cmd.Flags().String("metric-service-host-port", ":8001", "metric service host port")
 	cmd.Flags().StringSlice("kafka-service-brokers", []string{"kafka1:9092"}, "kafka service brokers")
-	//cmd.Flags().String("kafka-service-group-id", "api_microservice_consumer", "metric service host port")
-	//cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
+	cmd.Flags().String("kafka-service-group-id", "api_microservice_consumer", "metric service host port")
+	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
 
 	//cmd.Flags().String("auth-grpc-client-tls-cert-file", "", "Path to server tls cert.")
 	//cmd.Flags().String("auth-grpc-client-tls-key-file", "", "Path to server tls key.")
@@ -100,9 +100,9 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.TracerConfig.HostPort = viper.GetString("tracer-host-port")
 	c.cfg.MetricConfig.ServiceName = viper.GetString("metric-service-name")
 	c.cfg.MetricConfig.ServiceHostPort = viper.GetString("metric-service-host-port")
-	// c.cfg.KafkaConfig.Kafka.Brokers = viper.GetStringSlice("kafka-service-brokers")
-	// c.cfg.KafkaConfig.Kafka.GroupID = viper.GetString("kafka-service-group-id")
-	// c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
+	c.cfg.KafkaConfig.Brokers = viper.GetStringSlice("kafka-service-brokers")
+	c.cfg.KafkaConfig.GroupID = viper.GetString("kafka-service-group-id")
+	c.cfg.KafkaConfig.InitTopics = viper.GetBool("kafka-service-init-topics")
 
 	// c.cfg.KafkaConfig.KafkaTopics.UserCreate.TopicName = kafka.CreateUserTopic
 

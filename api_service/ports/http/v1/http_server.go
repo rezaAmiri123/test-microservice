@@ -36,7 +36,7 @@ func NewHttpServer(
 	e.Use(middleware.Recover())
 	v1 := e.Group("/api/v1")
 	articleGroup := v1.Group("/users")
-	articleGroup.POST("/create", httpServer.CreateUser())
+	articleGroup.POST("/register", httpServer.CreateUser())
 	//articleGroup.GET("/article/:slug", httpServer.GetBySlug())
 	return e, nil
 }
