@@ -27,19 +27,19 @@ gencert:
 
 docker_dev:
 	@echo Starting local docker dev compose
-	docker-compose -f docker-compose.yaml up --build
+	docker-compose -f docker-compose.yaml up --build --remove-orphans
 
 docker_dev_down:
 	@echo stoping local docker dev compose
-	docker-compose -f docker-compose.yaml down
+	docker-compose -f docker-compose.yaml down --remove-orphans
 
 local:
 	@echo Starting local docker compose
-	docker-compose -f docker-compose-local.yaml up -d --build
+	docker-compose -f docker-compose-local.yaml up -d --build --remove-orphans
 
 local_down:
 	@echo Stoping local docker compose
-	docker-compose -f docker-compose-local.yaml down
+	docker-compose -f docker-compose-local.yaml down --remove-orphans
 
 make_user_service_image:
 	docker build -f docker/user_service.Dockerfile -t reza879/user_service:$(git rev-parse --short HEAD) .

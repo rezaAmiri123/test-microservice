@@ -23,6 +23,10 @@ scrape_configs:
     static_configs:
       - targets: [ 'message_service:8001' ]
 
+  - job_name: 'api_service'
+    static_configs:
+      - targets: [ 'api_service:8001' ]
+
 #  - job_name: 'test1'
 #    scrape_interval: 5s
 #    metrics_path: '/metrics'

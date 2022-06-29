@@ -63,6 +63,27 @@ services:
       - zoo1
       - kafka
     networks: [ "microservices" ]
+
+  api_service:
+    container_name: api_service
+    build:
+      context: .
+      dockerfile: docker/api_service.Dockerfile
+    ports:
+      - "8380:8380"
+    expose:
+      - '8380'
+    restart: always
+    depends_on:
+      - user_service
+      - library_service
+      - message_service
+      - jaeger
+      - prometheus
+      - zoo1
+      - kafka
+    networks: [ "microservices" ]
+
   message_service:
     container_name: message_service
     build:
