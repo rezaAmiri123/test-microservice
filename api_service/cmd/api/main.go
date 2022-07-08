@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/rezaAmiri123/test-microservice/api_service/agent"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth/tls"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -33,7 +34,7 @@ type cli struct {
 
 type cfg struct {
 	agent.Config
-	//AuthGrpcClientTLSConfig tls.TLSConfig
+	AuthGrpcClientTLSConfig tls.TLSConfig
 }
 
 func setupFlags(cmd *cobra.Command) error {
@@ -42,8 +43,8 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().Int("http-server-port", 8380, "http server port.")
 	cmd.Flags().String("grpc-server-addr", "", "grpc server address.")
 	//cmd.Flags().Int("grpc-server-port", 8281, "grpc server port.")
-	//cmd.Flags().String("auth-grpc-server-addr", "user_service", "auth grpc server address.")
-	//cmd.Flags().Int("auth-grpc-server-port", 8181, "auth grpc server port.")
+	cmd.Flags().String("auth-grpc-server-addr", "user_service", "auth grpc server address.")
+	cmd.Flags().Int("auth-grpc-server-port", 8181, "auth grpc server port.")
 	//cmd.Flags().String("database-type", "pgx", "database type like mysql.")
 	//cmd.Flags().String("database-name", "auth_db", "database name.")
 	//cmd.Flags().String("database-username", "postgres", "database username.")
@@ -60,9 +61,9 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("kafka-service-group-id", "api_microservice_consumer", "metric service host port")
 	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
 
-	//cmd.Flags().String("auth-grpc-client-tls-cert-file", "", "Path to server tls cert.")
-	//cmd.Flags().String("auth-grpc-client-tls-key-file", "", "Path to server tls key.")
-	//cmd.Flags().String("auth-grpc-client-tls-ca-file", "", "Path to server certificate authority.")
+	cmd.Flags().String("auth-grpc-client-tls-cert-file", "", "Path to server tls cert.")
+	cmd.Flags().String("auth-grpc-client-tls-key-file", "", "Path to server tls key.")
+	cmd.Flags().String("auth-grpc-client-tls-ca-file", "", "Path to server certificate authority.")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -84,8 +85,8 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 
 	c.cfg.HttpServerAddr = viper.GetString("http-server-addr")
 	c.cfg.HttpServerPort = viper.GetInt("http-server-port")
-	//c.cfg.GRPCAuthClientAddr = viper.GetString("auth-grpc-server-addr")
-	//c.cfg.GRPCAuthClientPort = viper.GetInt("auth-grpc-server-port")
+	c.cfg.GRPCAuthClientAddr = viper.GetString("auth-grpc-server-addr")
+	c.cfg.GRPCAuthClientPort = viper.GetInt("auth-grpc-server-port")
 	//c.cfg.GRPCServerAddr = viper.GetString("grpc-server-addr")
 	//c.cfg.GRPCServerPort = viper.GetInt("grpc-server-port")
 	//c.cfg.DBConfig.Driver = viper.GetString("database-type")
@@ -106,20 +107,20 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 
 	// c.cfg.KafkaConfig.KafkaTopics.UserCreate.TopicName = kafka.CreateUserTopic
 
-	//c.cfg.AuthGrpcClientTLSConfig.CertFile = viper.GetString("auth-grpc-client-tls-cert-file")
-	//c.cfg.AuthGrpcClientTLSConfig.KeyFile = viper.GetString("auth-grpc-client-tls-key-file")
-	//c.cfg.AuthGrpcClientTLSConfig.CAFile = viper.GetString("auth-grpc-client-tls-ca-file")
-	//
-	//if c.cfg.AuthGrpcClientTLSConfig.CertFile != "" &&
-	//	c.cfg.AuthGrpcClientTLSConfig.KeyFile != "" {
-	//	c.cfg.AuthGrpcClientTLSConfig.Server = true
-	//	c.cfg.Config.GRPCAuthClientTLSConfig, err = tls.SetupTLSConfig(
-	//		c.cfg.AuthGrpcClientTLSConfig,
-	//	)
-	//	if err != nil {
-	//		return err
-	//	}
-	//}
+	c.cfg.AuthGrpcClientTLSConfig.CertFile = viper.GetString("auth-grpc-client-tls-cert-file")
+	c.cfg.AuthGrpcClientTLSConfig.KeyFile = viper.GetString("auth-grpc-client-tls-key-file")
+	c.cfg.AuthGrpcClientTLSConfig.CAFile = viper.GetString("auth-grpc-client-tls-ca-file")
+
+	if c.cfg.AuthGrpcClientTLSConfig.CertFile != "" &&
+		c.cfg.AuthGrpcClientTLSConfig.KeyFile != "" {
+		c.cfg.AuthGrpcClientTLSConfig.Server = true
+		c.cfg.Config.GRPCAuthClientTLSConfig, err = tls.SetupTLSConfig(
+			c.cfg.AuthGrpcClientTLSConfig,
+		)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

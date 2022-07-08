@@ -26,6 +26,35 @@ http://localhost:9090
 
 ```text
 .
+├── api_service
+│   ├── agent
+│   │   ├── agent.go
+│   │   ├── application.go
+│   │   ├── auth_client.go
+│   │   ├── http_server.go
+│   │   ├── logger.go
+│   │   ├── mertic.go
+│   │   └── tracing.go
+│   ├── app
+│   │   ├── app.go
+│   │   ├── command
+│   │   │   └── create_user.go
+│   │   └── query
+│   ├── cmd
+│   │   └── api
+│   │       └── main.go
+│   ├── domain
+│   │   └── dto
+│   │       ├── create_user.go
+│   │       └── user_login.go
+│   ├── metrics
+│   │   └── metrics.go
+│   └── ports
+│       └── http
+│           └── v1
+│               ├── create_user.go
+│               ├── http_server.go
+│               └── user_loign.go
 ├── deploy
 │   └── test-microservice
 │       ├── Chart.yaml
@@ -39,6 +68,7 @@ http://localhost:9090
 │       │       └── test-connection.yaml
 │       └── values.yaml
 ├── docker
+│   ├── api_service.Dockerfile
 │   ├── library_service.Dockerfile
 │   ├── message_service.Dockerfile
 │   └── user_service.Dockerfile
@@ -79,6 +109,8 @@ http://localhost:9090
 │   ├── metrics
 │   │   └── metrics.go
 │   └── ports
+│       ├── dto
+│       │   └── article_create.go
 │       └── http
 │           ├── create_aricle.go
 │           ├── get_article_by_slug.go
@@ -130,6 +162,8 @@ http://localhost:9090
 │   └── prometheus_docker.yml
 ├── pkg
 │   ├── auth
+│   │   ├── auth_client
+│   │   │   └── grpc.go
 │   │   ├── auth.go
 │   │   ├── authorize.go
 │   │   ├── middleware.go
@@ -158,7 +192,8 @@ http://localhost:9090
 │   ├── redis
 │   │   └── redis.go
 │   ├── tracing
-│   │   └── jaeger.go
+│   │   ├── jaeger.go
+│   │   └── utils.go
 │   └── utils
 │       └── validator.go
 ├── README.md

@@ -23,12 +23,14 @@ func NewHttpServer(
 	application *app.Application,
 	metrics *metrics.ApiServiceMetric,
 	log logger.Logger,
+	authClient auth.AuthClient,
 ) (*echo.Echo, error) {
 	httpServer := &HttpServer{
-		app:      application,
-		metrics:  metrics,
-		validate: validator.New(),
-		log:      log,
+		app:        application,
+		metrics:    metrics,
+		validate:   validator.New(),
+		log:        log,
+		authClient: authClient,
 	}
 	//router := newEchoRouter(httpServer)
 	e := echo.New()
@@ -37,6 +39,7 @@ func NewHttpServer(
 	v1 := e.Group("/api/v1")
 	articleGroup := v1.Group("/users")
 	articleGroup.POST("/register", httpServer.CreateUser())
+	articleGroup.POST("/login", httpServer.UserLogin())
 	//articleGroup.GET("/article/:slug", httpServer.GetBySlug())
 	return e, nil
 }

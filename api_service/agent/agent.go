@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"crypto/tls"
 	"io"
 	"sync"
 
@@ -20,9 +21,9 @@ type Config struct {
 	HttpServerPort int
 	//GRPCServerAddr          string
 	//GRPCServerPort          int
-	//GRPCAuthClientAddr      string
-	//GRPCAuthClientPort      int
-	//GRPCAuthClientTLSConfig *tls.Config
+	GRPCAuthClientAddr      string
+	GRPCAuthClientPort      int
+	GRPCAuthClientTLSConfig *tls.Config
 
 	//DBConfig     adapters.GORMConfig
 	//DBConfig     postgres.Config
@@ -62,7 +63,7 @@ func NewAgent(config Config) (*Agent, error) {
 		a.setupTracing,
 		a.setupApplication,
 		//a.setupKafka,
-		//a.setupAuthClient,
+		a.setupAuthClient,
 		a.setupHttpServer,
 		//a.setupGrpcServer,
 		//a.setupGRPCServer,

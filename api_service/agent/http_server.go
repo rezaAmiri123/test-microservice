@@ -7,7 +7,7 @@ import (
 
 func (a *Agent) setupHttpServer() error {
 	httpAddress := fmt.Sprintf("%s:%d", a.Config.HttpServerAddr, a.Config.HttpServerPort)
-	echoServer, err := v1.NewHttpServer(a.Application, a.metric, a.logger)
+	echoServer, err := v1.NewHttpServer(a.Application, a.metric, a.logger, a.AuthClient)
 	if err != nil {
 		return err
 	}
