@@ -16,7 +16,7 @@ func main() {
 	cli := &cli{}
 
 	cmd := &cobra.Command{
-		Use:     "library",
+		Use:     "message",
 		PreRunE: cli.setupConfig,
 		RunE:    cli.run,
 	}

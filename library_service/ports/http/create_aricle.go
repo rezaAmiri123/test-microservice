@@ -24,7 +24,7 @@ func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 
-		u, err := h.authClient.VerityToken(ctx, auth.GetTokenFromHeader(c.Request()))
+		u, err := h.authClient.VerifyToken(ctx, auth.GetTokenFromHeader(c.Request()))
 		if err != nil {
 			// http.Error(w, err.Error(), http.StatusBadRequest)
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())

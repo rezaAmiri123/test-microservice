@@ -37,9 +37,13 @@ func NewHttpServer(
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	v1 := e.Group("/api/v1")
-	articleGroup := v1.Group("/users")
-	articleGroup.POST("/register", httpServer.CreateUser())
-	articleGroup.POST("/login", httpServer.UserLogin())
+
+	userGroup := v1.Group("/users")
+	userGroup.POST("/register", httpServer.CreateUser())
+	userGroup.POST("/login", httpServer.UserLogin())
+
+	articleGroup := v1.Group("/articles")
+	articleGroup.POST("/create", httpServer.CreateArticle())
 	//articleGroup.GET("/article/:slug", httpServer.GetBySlug())
 	return e, nil
 }

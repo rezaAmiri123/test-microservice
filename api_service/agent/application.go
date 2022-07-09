@@ -7,17 +7,11 @@ import (
 )
 
 func (a *Agent) setupApplication() error {
-	//dbConn, err := postgres.NewPsqlDB(a.DBConfig)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	////repo, err := adapters.NewGORMArticleRepository(a.DBConfig)
-	//repo := pg.NewPGArticleRepository(dbConn)
 	producer := kafkaClient.NewProducer(a.logger, a.KafkaConfig.Brokers)
 	application := &app.Application{
 		Commands: app.Commands{
-			CreateUser: command.NewCreateUserHandler(producer, a.logger),
+			CreateUser:    command.NewCreateUserHandler(producer, a.logger),
+			CreateArticle: command.NewCreateArticleHandler(producer, a.logger),
 		},
 		//Queries: app.Queries{
 		//	GetArticleBySlug: queries.NewGetArticleHandler(repo),

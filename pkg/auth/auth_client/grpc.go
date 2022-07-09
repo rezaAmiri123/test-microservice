@@ -30,8 +30,8 @@ func (a *UserAuthClient) Login(ctx context.Context, username, password string) (
 	return res.GetToken(), nil
 }
 
-func (a *UserAuthClient) VerityToken(ctx context.Context, token string) (*auth.User, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "UserAuthClient.VerityToken")
+func (a *UserAuthClient) VerifyToken(ctx context.Context, token string) (*auth.User, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "UserAuthClient.VerifyToken")
 	defer span.Finish()
 
 	u, err := a.AuthClient.VerifyToken(ctx, &UserApi.VerifyTokenRequest{Token: token})

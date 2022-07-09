@@ -10,7 +10,8 @@ type Application struct {
 }
 
 type Commands struct {
-	CreateUser command.CreateUserHandler
+	CreateUser    command.CreateUserHandler
+	CreateArticle command.CreateArticleHandler
 }
 
 //type Queries struct {

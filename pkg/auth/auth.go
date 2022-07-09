@@ -6,7 +6,7 @@ import (
 
 type AuthClient interface {
 	Login(ctx context.Context, username, password string) (string, error)
-	VerityToken(ctx context.Context, token string) (*User, error)
+	VerifyToken(ctx context.Context, token string) (*User, error)
 }
 
 type User struct {
@@ -27,7 +27,7 @@ type User struct {
 //	return "", nil
 //}
 //
-//func (a *UserAuthClient) VerityToken(ctx context.Context, token string) (*User, error) {
+//func (a *UserAuthClient) VerifyToken(ctx context.Context, token string) (*User, error) {
 //	u, err := a.AuthClient.VerifyToken(ctx, &UserApi.VerifyTokenRequest{Token: token})
 //	if err != nil {
 //		return nil, err

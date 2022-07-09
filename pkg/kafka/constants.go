@@ -18,7 +18,7 @@ const (
 	writerRequiredAcks = -1
 	writerMaxAttempts  = 3
 
-	CreateUserTopic = "CreateUser"
-
-	CreateEmailTopic = "CreateEmail"
+	CreateUserTopic    = "CreateUser"
+	CreateArticleTopic = "CreateArticle"
+	CreateEmailTopic   = "CreateEmail"
 )

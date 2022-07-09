@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package kafkaMessages;
+
+option go_package="github.com/rezaAmiri123/test-microservice/library_service/proto/kafka";
+
+message ArticleCreateRequest {
+  string UUID = 1;
+  string UserUUID = 2;
+  string Title = 3;
+  string Description = 4;
+  string Body = 5;
+}
