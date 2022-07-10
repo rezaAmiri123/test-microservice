@@ -8,6 +8,7 @@ import (
 
 	"github.com/rezaAmiri123/test-microservice/library_service/agent"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth/tls"
+	"github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -57,7 +58,7 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("tracer-host-port", "jaeger:6831", "tracer host address.")
 	cmd.Flags().String("metric-service-name", "library_service", "metric service name")
 	cmd.Flags().String("metric-service-host-port", ":8001", "metric service host port")
-	cmd.Flags().StringSlice("kafka-service-brokers", []string{"kafka1:9092"}, "kafka service brokers")
+	cmd.Flags().StringSlice("kafka-service-brokers", []string{"kafka:9092"}, "kafka service brokers")
 	cmd.Flags().String("kafka-service-group-id", "library_microservice_consumer", "metric service host port")
 	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
 
@@ -101,11 +102,11 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.TracerConfig.HostPort = viper.GetString("tracer-host-port")
 	c.cfg.MetricConfig.ServiceName = viper.GetString("metric-service-name")
 	c.cfg.MetricConfig.ServiceHostPort = viper.GetString("metric-service-host-port")
-	// c.cfg.KafkaConfig.Kafka.Brokers = viper.GetStringSlice("kafka-service-brokers")
-	// c.cfg.KafkaConfig.Kafka.GroupID = viper.GetString("kafka-service-group-id")
-	// c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
+	c.cfg.KafkaConfig.Kafka.Brokers = viper.GetStringSlice("kafka-service-brokers")
+	c.cfg.KafkaConfig.Kafka.GroupID = viper.GetString("kafka-service-group-id")
+	c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
 
-	// c.cfg.KafkaConfig.KafkaTopics.UserCreate.TopicName = kafka.CreateUserTopic
+	c.cfg.KafkaConfig.KafkaTopics.ArticleCreate.TopicName = kafka.CreateArticleTopic
 
 	c.cfg.AuthGrpcClientTLSConfig.CertFile = viper.GetString("auth-grpc-client-tls-cert-file")
 	c.cfg.AuthGrpcClientTLSConfig.KeyFile = viper.GetString("auth-grpc-client-tls-key-file")

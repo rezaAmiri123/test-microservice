@@ -7,7 +7,7 @@ import (
 func (a *Agent) setupLogger() error {
 	appLogger := applogger.NewAppLogger(a.LoggerConfig)
 	appLogger.InitLogger()
-	appLogger.WithName("UserService")
+	appLogger.WithName("LibraryService")
 	a.logger = appLogger
 	return nil
 }

@@ -10,6 +10,7 @@ import (
 
 	"github.com/rezaAmiri123/test-microservice/library_service/app"
 	"github.com/rezaAmiri123/test-microservice/library_service/metrics"
+	kafkatopics "github.com/rezaAmiri123/test-microservice/library_service/ports/kafka"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
@@ -32,13 +33,14 @@ type Config struct {
 	LoggerConfig applogger.Config
 	TracerConfig tracing.Config
 	MetricConfig metrics.Config
+	KafkaConfig  kafkatopics.Config
 }
 
 type Agent struct {
 	Config
 
 	logger      logger.Logger
-	metric      *metrics.ArticleServiceMetric
+	metric      *metrics.LibraryServiceMetric
 	httpServer  *echo.Echo
 	grpcServer  *grpc.Server
 	repository  domain.Repository
@@ -63,9 +65,9 @@ func NewAgent(config Config) (*Agent, error) {
 		//a.setupRepository,
 		a.setupTracing,
 		a.setupApplication,
-		//a.setupKafka,
 		a.setupAuthClient,
 		a.setupHttpServer,
+		a.setupKafka,
 		//a.setupGrpcServer,
 		//a.setupGRPCServer,
 		//a.setupTracer,

@@ -3,7 +3,7 @@ package message_example
 import (
 	"context"
 	"fmt"
-	kafkaMessages "github.com/rezaAmiri123/test-microservice/message_service/proto/kafka"
+	kafkaMessages "github.com/rezaAmiri123/test-microservice/library_service/proto/kafka"
 	kafka2 "github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	kafkaClient "github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
@@ -26,22 +26,24 @@ func Produce(ctx context.Context) {
 	//	Brokers: []string{broker1Address},
 	//	Topic:   kafka2.CreateUserTopic,
 	//})
-	e := &kafkaMessages.Email{
-		To:      []string{"to1@example.com", "to2@example.com"},
-		From:    "from@example.com",
-		Subject: "subject",
-		Body:    "body",
-	}
-	msg := &kafkaMessages.CreateEmail{Email: e}
-
-	value, err := proto.Marshal(msg)
-	if err != nil {
-		panic("could not write message " + err.Error())
-	}
 
 	for {
-		err := producer.PublishMessage(context.Background(), kafka.Message{
-			Topic: kafka2.CreateEmailTopic,
+		msg := &kafkaMessages.ArticleCreateRequest{
+			UUID:        "kkkkkk" + string(i),
+			UserUUID:    "lllllll" + string(i),
+			Description: "hhhhhhhhh" + string(i),
+			Title:       "title" + string(i),
+
+			Body: "body" + string(i),
+		}
+
+		value, err := proto.Marshal(msg)
+		if err != nil {
+			panic("could not write message " + err.Error())
+		}
+
+		err = producer.PublishMessage(context.Background(), kafka.Message{
+			Topic: kafka2.CreateArticleTopic,
 			Value: value,
 			Time:  time.Now().UTC(),
 		})
