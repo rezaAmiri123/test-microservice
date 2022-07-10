@@ -29,12 +29,12 @@ func Produce(ctx context.Context) {
 
 	for {
 		msg := &kafkaMessages.ArticleCreateRequest{
-			UUID:        "kkkkkk" + string(i),
-			UserUUID:    "lllllll" + string(i),
-			Description: "hhhhhhhhh" + string(i),
-			Title:       "title" + string(i),
+			UUID:        fmt.Sprintf("uuid %v", i),
+			UserUUID:    fmt.Sprintf("user uuid %v", i),
+			Description: fmt.Sprintf("description %v", i),
+			Title:       fmt.Sprintf("title %v", i),
 
-			Body: "body" + string(i),
+			Body: fmt.Sprintf("body %v", i),
 		}
 
 		value, err := proto.Marshal(msg)
