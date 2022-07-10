@@ -1,8 +1,5 @@
 Hi everyone<br/> 
 This is a test project about implementing a library <br/>
-There are three services here <br/>
-user service that going to handle user<br/> 
-library service and message service <br/>
 some technologies have been used in this project<br/>
 
 [Kafka](https://github.com/segmentio/kafka-go) as messages broker<br/>
@@ -38,6 +35,7 @@ http://localhost:9090
 │   ├── app
 │   │   ├── app.go
 │   │   ├── command
+│   │   │   ├── create_article.go
 │   │   │   └── create_user.go
 │   │   └── query
 │   ├── cmd
@@ -45,6 +43,7 @@ http://localhost:9090
 │   │       └── main.go
 │   ├── domain
 │   │   └── dto
+│   │       ├── create_article.go
 │   │       ├── create_user.go
 │   │       └── user_login.go
 │   ├── metrics
@@ -52,6 +51,7 @@ http://localhost:9090
 │   └── ports
 │       └── http
 │           └── v1
+│               ├── create_article.go
 │               ├── create_user.go
 │               ├── http_server.go
 │               └── user_loign.go
@@ -88,6 +88,7 @@ http://localhost:9090
 │   │   ├── application.go
 │   │   ├── auth_client.go
 │   │   ├── http_server.go
+│   │   ├── kafka.go
 │   │   ├── logger.go
 │   │   ├── mertic.go
 │   │   └── tracing.go
@@ -108,13 +109,22 @@ http://localhost:9090
 │   │       └── repository.go
 │   ├── metrics
 │   │   └── metrics.go
-│   └── ports
-│       ├── dto
-│       │   └── article_create.go
-│       └── http
-│           ├── create_aricle.go
-│           ├── get_article_by_slug.go
-│           └── http_server.go
+│   ├── ports
+│   │   ├── dto
+│   │   │   └── article_create.go
+│   │   ├── http
+│   │   │   ├── create_aricle.go
+│   │   │   ├── get_article_by_slug.go
+│   │   │   └── http_server.go
+│   │   └── kafka
+│   │       ├── config.go
+│   │       ├── consumer_group.go
+│   │       ├── create_article_consumer.go
+│   │       └── utils.go
+│   └── proto
+│       └── kafka
+│           ├── kafka.pb.go
+│           └── kafka.proto
 ├── Makefile
 ├── message_service
 │   ├── adapters
