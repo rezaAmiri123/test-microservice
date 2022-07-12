@@ -20,6 +20,9 @@ import (
 )
 
 type Config struct {
+	ServerTLSConfig *tls.Config
+	PeerTLSConfig   *tls.Config
+
 	HttpServerAddr          string
 	HttpServerPort          int
 	GRPCServerAddr          string
@@ -67,9 +70,9 @@ func NewAgent(config Config) (*Agent, error) {
 		a.setupApplication,
 		a.setupAuthClient,
 		a.setupHttpServer,
+		a.setupGrpcServer,
 		a.setupKafka,
 		//a.setupGrpcServer,
-		//a.setupGRPCServer,
 		//a.setupTracer,
 	}
 	for _, fn := range setupsFn {

@@ -7,7 +7,7 @@ import (
 )
 
 func (a *Agent) setupMetric() error {
-	metric := metrics.NewUserServiceMetric(&a.MetricConfig)
+	metric := metrics.NewLibraryServiceMetric(&a.MetricConfig)
 	//prometheus.MustRegister(metric.CreateUserHttpRequests)
 	a.metric = metric
 	http.Handle("/metrics", promhttp.Handler())

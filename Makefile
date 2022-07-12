@@ -71,6 +71,11 @@ library_service_proto:
 		--go-grpc_out=library_service/proto/kafka --go-grpc_opt=paths=source_relative \
 		--proto_path=library_service/proto/kafka  library_service/proto/kafka/kafka.proto
 
+	protoc \
+		--go_out=library_service/proto/grpc --go_opt=paths=source_relative \
+		--go-grpc_out=library_service/proto/grpc --go-grpc_opt=paths=source_relative \
+		--proto_path=library_service/proto/grpc library_service/proto/grpc/library.proto
+
 # ==============================================================================
 # Go migrate postgresql
 

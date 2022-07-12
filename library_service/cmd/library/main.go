@@ -36,6 +36,7 @@ type cli struct {
 type cfg struct {
 	agent.Config
 	AuthGrpcClientTLSConfig tls.TLSConfig
+	GrpcServerTLSConfig     tls.TLSConfig
 }
 
 func setupFlags(cmd *cobra.Command) error {
@@ -62,6 +63,10 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("kafka-service-group-id", "library_microservice_consumer", "metric service host port")
 	cmd.Flags().Bool("kafka-service-init-topics", true, "metric service host port")
 
+	cmd.Flags().String("grpc-server-tls-cert-file", "", "Path to server tls cert.")
+	cmd.Flags().String("grpc-server-tls-key-file", "", "Path to server tls key.")
+	cmd.Flags().String("grpc-server-tls-ca-file", "", "Path to server certificate authority.")
+
 	cmd.Flags().String("auth-grpc-client-tls-cert-file", "", "Path to server tls cert.")
 	cmd.Flags().String("auth-grpc-client-tls-key-file", "", "Path to server tls key.")
 	cmd.Flags().String("auth-grpc-client-tls-ca-file", "", "Path to server certificate authority.")
@@ -83,6 +88,8 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
+
+	viper.AutomaticEnv()
 
 	c.cfg.HttpServerAddr = viper.GetString("http-server-addr")
 	c.cfg.HttpServerPort = viper.GetInt("http-server-port")
@@ -108,9 +115,24 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 
 	c.cfg.KafkaConfig.KafkaTopics.ArticleCreate.TopicName = kafka.CreateArticleTopic
 
+	c.cfg.GrpcServerTLSConfig.CertFile = viper.GetString("grpc-server-tls-cert-file")
+	c.cfg.GrpcServerTLSConfig.KeyFile = viper.GetString("grpc-server-tls-key-file")
+	c.cfg.GrpcServerTLSConfig.CAFile = viper.GetString("grpc-server-tls-ca-file")
+
 	c.cfg.AuthGrpcClientTLSConfig.CertFile = viper.GetString("auth-grpc-client-tls-cert-file")
 	c.cfg.AuthGrpcClientTLSConfig.KeyFile = viper.GetString("auth-grpc-client-tls-key-file")
 	c.cfg.AuthGrpcClientTLSConfig.CAFile = viper.GetString("auth-grpc-client-tls-ca-file")
+
+	if c.cfg.GrpcServerTLSConfig.CertFile != "" &&
+		c.cfg.GrpcServerTLSConfig.KeyFile != "" {
+		c.cfg.GrpcServerTLSConfig.Server = true
+		c.cfg.Config.ServerTLSConfig, err = tls.SetupTLSConfig(
+			c.cfg.GrpcServerTLSConfig,
+		)
+		if err != nil {
+			return err
+		}
+	}
 
 	if c.cfg.AuthGrpcClientTLSConfig.CertFile != "" &&
 		c.cfg.AuthGrpcClientTLSConfig.KeyFile != "" {

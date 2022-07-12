@@ -2,11 +2,12 @@ package app
 
 import (
 	"github.com/rezaAmiri123/test-microservice/api_service/app/command"
+	"github.com/rezaAmiri123/test-microservice/api_service/app/query"
 )
 
 type Application struct {
 	Commands Commands
-	//Queries Queries
+	Queries  Queries
 }
 
 type Commands struct {
@@ -14,7 +15,6 @@ type Commands struct {
 	CreateArticle command.CreateArticleHandler
 }
 
-//type Queries struct {
-//	GetProfile query.GetProfileHandler
-//	GetUserToken query.GetUserTokenHandler
-//}
+type Queries struct {
+	GetArticleBySlug query.GetArticleBySlugHandler
+}

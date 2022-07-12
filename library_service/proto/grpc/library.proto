@@ -1,0 +1,25 @@
+syntax="proto3";
+
+package library;
+
+option go_package="github.com/rezaAmiri123/test-microservice/library_service/proto/grpc";
+
+service ArticleService {
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse){}
+}
+
+message Article{
+  string title=1;
+  string slug=2;
+  string body=3;
+  string description=4;
+}
+
+
+message GetArticleRequest {
+  string slug=1;
+}
+
+message GetArticleResponse {
+  Article article=1;
+}
