@@ -3,9 +3,10 @@ package query
 import (
 	"context"
 	"github.com/opentracing/opentracing-go"
-	"github.com/rezaAmiri123/test-microservice/api_service/domain/dto"
+	"github.com/rezaAmiri123/test-microservice/api_service/dto"
 	libraryapi "github.com/rezaAmiri123/test-microservice/library_service/proto/grpc"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
+	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
 )
 
 type GetArticleBySlugHandler struct {
@@ -27,18 +28,20 @@ func (h *GetArticleBySlugHandler) Handle(ctx context.Context, req *dto.GetArticl
 	span, ctx := opentracing.StartSpanFromContext(ctx, "GetArticleBySlugHandler.Handle")
 	defer span.Finish()
 
-	r := &libraryapi.GetArticleRequest{
+	ctx = tracing.InjectTextMapCarrierToGrpcMetaData(ctx, span.Context())
+
+	r := &libraryapi.GetArticleBySlugRequest{
 		Slug: req.Slug,
 	}
-	a, err := h.client.GetArticle(ctx, r)
+	a, err := h.client.GetArticleBySlug(ctx, r)
 	if err != nil {
 		return &dto.GetArticleBySlugResponse{}, err
 	}
 
-	res := &dto.GetArticleBySlugResponse{
-		Title:       a.GetArticle().GetTitle(),
-		Body:        a.GetArticle().GetBody(),
-		Description: a.GetArticle().GetDescription(),
-	}
+	res := &dto.GetArticleBySlugResponse{}
+	res.Title = a.GetArticle().GetTitle()
+	res.Body = a.GetArticle().GetBody()
+	res.Description = a.GetArticle().GetDescription()
+
 	return res, nil
 }

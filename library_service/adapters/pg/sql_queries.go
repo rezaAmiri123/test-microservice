@@ -20,4 +20,10 @@ const (
 							user_uuid, title, slug, description, body, created_at, updated_at 
 						FROM articles
 							WHERE slug = $1`
+
+	articleListQuery = `SELECT uuid, 
+							user_uuid, title, slug, description, body
+						FROM articles 
+							ORDER BY created_at OFFSET $1 LIMIT $2`
+	totalArticleCountQuery = `SELECT COUNT (uuid) as totalCount FROM articles`
 )

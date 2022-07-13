@@ -18,7 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArticleServiceClient interface {
-	GetArticle(ctx context.Context, in *GetArticleRequest, opts ...grpc.CallOption) (*GetArticleResponse, error)
+	GetArticleBySlug(ctx context.Context, in *GetArticleBySlugRequest, opts ...grpc.CallOption) (*GetArticleBySlugResponse, error)
+	GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*GetArticlesResponse, error)
 }
 
 type articleServiceClient struct {
@@ -29,9 +30,18 @@ func NewArticleServiceClient(cc grpc.ClientConnInterface) ArticleServiceClient {
 	return &articleServiceClient{cc}
 }
 
-func (c *articleServiceClient) GetArticle(ctx context.Context, in *GetArticleRequest, opts ...grpc.CallOption) (*GetArticleResponse, error) {
-	out := new(GetArticleResponse)
-	err := c.cc.Invoke(ctx, "/library.ArticleService/GetArticle", in, out, opts...)
+func (c *articleServiceClient) GetArticleBySlug(ctx context.Context, in *GetArticleBySlugRequest, opts ...grpc.CallOption) (*GetArticleBySlugResponse, error) {
+	out := new(GetArticleBySlugResponse)
+	err := c.cc.Invoke(ctx, "/library.ArticleService/GetArticleBySlug", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*GetArticlesResponse, error) {
+	out := new(GetArticlesResponse)
+	err := c.cc.Invoke(ctx, "/library.ArticleService/GetArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +52,8 @@ func (c *articleServiceClient) GetArticle(ctx context.Context, in *GetArticleReq
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility
 type ArticleServiceServer interface {
-	GetArticle(context.Context, *GetArticleRequest) (*GetArticleResponse, error)
+	GetArticleBySlug(context.Context, *GetArticleBySlugRequest) (*GetArticleBySlugResponse, error)
+	GetArticles(context.Context, *GetArticlesRequest) (*GetArticlesResponse, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -50,8 +61,11 @@ type ArticleServiceServer interface {
 type UnimplementedArticleServiceServer struct {
 }
 
-func (UnimplementedArticleServiceServer) GetArticle(context.Context, *GetArticleRequest) (*GetArticleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticle not implemented")
+func (UnimplementedArticleServiceServer) GetArticleBySlug(context.Context, *GetArticleBySlugRequest) (*GetArticleBySlugResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticleBySlug not implemented")
+}
+func (UnimplementedArticleServiceServer) GetArticles(context.Context, *GetArticlesRequest) (*GetArticlesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticles not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 
@@ -66,20 +80,38 @@ func RegisterArticleServiceServer(s grpc.ServiceRegistrar, srv ArticleServiceSer
 	s.RegisterService(&ArticleService_ServiceDesc, srv)
 }
 
-func _ArticleService_GetArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetArticleRequest)
+func _ArticleService_GetArticleBySlug_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleBySlugRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ArticleServiceServer).GetArticle(ctx, in)
+		return srv.(ArticleServiceServer).GetArticleBySlug(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/library.ArticleService/GetArticle",
+		FullMethod: "/library.ArticleService/GetArticleBySlug",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).GetArticle(ctx, req.(*GetArticleRequest))
+		return srv.(ArticleServiceServer).GetArticleBySlug(ctx, req.(*GetArticleBySlugRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_GetArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticlesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetArticles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/library.ArticleService/GetArticles",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetArticles(ctx, req.(*GetArticlesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,8 +124,12 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ArticleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetArticle",
-			Handler:    _ArticleService_GetArticle_Handler,
+			MethodName: "GetArticleBySlug",
+			Handler:    _ArticleService_GetArticleBySlug_Handler,
+		},
+		{
+			MethodName: "GetArticles",
+			Handler:    _ArticleService_GetArticles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -5,7 +5,8 @@ package library;
 option go_package="github.com/rezaAmiri123/test-microservice/library_service/proto/grpc";
 
 service ArticleService {
-  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse){}
+  rpc GetArticleBySlug(GetArticleBySlugRequest) returns (GetArticleBySlugResponse){}
+  rpc GetArticles(GetArticlesRequest) returns (GetArticlesResponse){}
 }
 
 message Article{
@@ -16,10 +17,24 @@ message Article{
 }
 
 
-message GetArticleRequest {
+message GetArticleBySlugRequest {
   string slug=1;
 }
 
-message GetArticleResponse {
+message GetArticleBySlugResponse {
   Article article=1;
+}
+
+message GetArticlesRequest{
+  int64 page = 1;
+  int64 size = 2;
+}
+
+message GetArticlesResponse{
+  int64 TotalCount = 1;
+  int64 TotalPages = 2;
+  int64 Page = 3;
+  int64 Size = 4;
+  bool HasMore = 5;
+  repeated Article articles = 6;
 }

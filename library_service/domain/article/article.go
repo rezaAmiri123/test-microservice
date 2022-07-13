@@ -3,8 +3,17 @@ package article
 import (
 	"context"
 	"github.com/google/uuid"
+	libraryapi "github.com/rezaAmiri123/test-microservice/library_service/proto/grpc"
 	"github.com/rezaAmiri123/test-microservice/pkg/utils"
 )
+
+type List struct {
+	TotalCount int64 `json:"total_count"`
+	TotalPages int64 `json:"total_pages"`
+	Page       int64 `json:"page"`
+	Size       int64 `json:"size"`
+	HasMore    bool  `json:"has_more"`
+}
 
 // Article model
 type Article struct {
@@ -14,6 +23,19 @@ type Article struct {
 	Slug        string `json:"slug"`
 	Description string `json:"description"`
 	Body        string `json:"body" validate:"required,min=3,max=250"`
+}
+
+func ArticleResponseToGrpc(a *Article) *libraryapi.Article {
+	res := &libraryapi.Article{}
+	res.Title = a.Title
+	res.Body = a.Body
+	res.Description = a.Description
+	return res
+}
+
+type ArticleList struct {
+	List
+	Articles []*Article
 }
 
 // Validate validates fields of user model

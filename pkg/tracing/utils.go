@@ -1,8 +1,10 @@
 package tracing
 
 import (
+	"context"
 	"github.com/opentracing/opentracing-go"
 	"github.com/segmentio/kafka-go"
+	"google.golang.org/grpc/metadata"
 )
 
 //func StartHttpServerTracerSpan(c echo.Context, operationName string) (context.Context, opentracing.Span) {
@@ -69,13 +71,13 @@ import (
 //	return opentracing.TextMapCarrier(textMap)
 //}
 
-//func InjectTextMapCarrierToGrpcMetaData(ctx context.Context, spanCtx opentracing.SpanContext) context.Context {
-//	if textMapCarrier, err := InjectTextMapCarrier(spanCtx); err == nil {
-//		md := metadata.New(textMapCarrier)
-//		ctx = metadata.NewOutgoingContext(ctx, md)
-//	}
-//	return ctx
-//}
+func InjectTextMapCarrierToGrpcMetaData(ctx context.Context, spanCtx opentracing.SpanContext) context.Context {
+	if textMapCarrier, err := InjectTextMapCarrier(spanCtx); err == nil {
+		md := metadata.New(textMapCarrier)
+		ctx = metadata.NewOutgoingContext(ctx, md)
+	}
+	return ctx
+}
 
 func GetKafkaTracingHeadersFromSpanCtx(spanCtx opentracing.SpanContext) []kafka.Header {
 	textMapCarrier, err := InjectTextMapCarrier(spanCtx)

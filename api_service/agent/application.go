@@ -23,6 +23,7 @@ func (a *Agent) setupApplication() error {
 		},
 		Queries: app.Queries{
 			GetArticleBySlug: query.NewGetArticleBySlugHandler(articleClient, a.logger),
+			GetArticles:      query.NewGetArticlesHandler(articleClient, a.logger),
 		},
 	}
 	a.Application = application

@@ -3,7 +3,7 @@ package command
 import (
 	"context"
 	"github.com/opentracing/opentracing-go"
-	"github.com/rezaAmiri123/test-microservice/api_service/domain/dto"
+	"github.com/rezaAmiri123/test-microservice/api_service/dto"
 	kafkaLibrary "github.com/rezaAmiri123/test-microservice/library_service/proto/kafka"
 	kafkaClient "github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"

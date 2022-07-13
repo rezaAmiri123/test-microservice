@@ -12,6 +12,7 @@ type Application struct {
 
 type Queries struct {
 	GetArticleBySlug *queries.GetArticleBySlugHandler
+	GetArticles      *queries.GetArticlesHandler
 }
 
 type Commands struct {

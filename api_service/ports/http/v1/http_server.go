@@ -44,6 +44,7 @@ func NewHttpServer(
 
 	articleGroup := v1.Group("/articles")
 	articleGroup.POST("/create", httpServer.CreateArticle())
+	articleGroup.GET("/list", httpServer.GetArticles())
 	articleGroup.GET("/article/:slug", httpServer.GetArticleBySlug())
 	return e, nil
 }

@@ -15,6 +15,7 @@ type LibraryServiceMetric struct {
 	CreateArticleHttpRequests    prometheus.Counter
 	GetArticleBySlugHttpRequests prometheus.Counter
 	GetArticleBySlugGrpcRequests prometheus.Counter
+	GetArticlesGrpcRequests      prometheus.Counter
 	CreateArticleKafkaRequests   prometheus.Counter
 	SuccessKafkaMessages         prometheus.Counter
 	ErrorKafkaMessages           prometheus.Counter
@@ -33,6 +34,10 @@ func NewLibraryServiceMetric(cfg *Config) *LibraryServiceMetric {
 		GetArticleBySlugGrpcRequests: promauto.NewCounter(prometheus.CounterOpts{
 			Name: fmt.Sprintf("%s_get_article_by_slug_grpc_requests_total", cfg.ServiceName),
 			Help: "The total of get article by slug grpc requests",
+		}),
+		GetArticlesGrpcRequests: promauto.NewCounter(prometheus.CounterOpts{
+			Name: fmt.Sprintf("%s_get_articles_grpc_requests_total", cfg.ServiceName),
+			Help: "The total of get articles grpc requests",
 		}),
 		CreateArticleKafkaRequests: promauto.NewCounter(prometheus.CounterOpts{
 			Name: fmt.Sprintf("%s_create_article_kafka_requests_total", cfg.ServiceName),

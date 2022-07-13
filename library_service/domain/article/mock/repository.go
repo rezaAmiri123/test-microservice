@@ -10,6 +10,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	article "github.com/rezaAmiri123/test-microservice/library_service/domain/article"
+	pagnation "github.com/rezaAmiri123/test-microservice/pkg/pagnation"
 )
 
 // MockRepository is a mock of Repository interface.
@@ -62,4 +63,19 @@ func (m *MockRepository) GetBySlug(ctx context.Context, slug string) (*article.A
 func (mr *MockRepositoryMockRecorder) GetBySlug(ctx, slug interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBySlug", reflect.TypeOf((*MockRepository)(nil).GetBySlug), ctx, slug)
+}
+
+// List mocks base method.
+func (m *MockRepository) List(ctx context.Context, page *pagnation.Pagination) (*article.ArticleList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", ctx, page)
+	ret0, _ := ret[0].(*article.ArticleList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockRepositoryMockRecorder) List(ctx, page interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRepository)(nil).List), ctx, page)
 }

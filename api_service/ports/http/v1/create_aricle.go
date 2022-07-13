@@ -2,7 +2,7 @@ package v1
 
 import (
 	"github.com/google/uuid"
-	"github.com/rezaAmiri123/test-microservice/api_service/domain/dto"
+	"github.com/rezaAmiri123/test-microservice/api_service/dto"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

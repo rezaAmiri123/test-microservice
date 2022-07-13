@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *articleGRPCServer) GetArticle(ctx context.Context, req *libraryservice.GetArticleRequest) (*libraryservice.GetArticleResponse, error) {
+func (s *articleGRPCServer) GetArticleBySlug(ctx context.Context, req *libraryservice.GetArticleBySlugRequest) (*libraryservice.GetArticleBySlugResponse, error) {
 	s.cfg.Metric.GetArticleBySlugGrpcRequests.Inc()
 
 	span, ctx := opentracing.StartSpanFromContext(ctx, "articleGRPCServer.GetArticle")
@@ -24,5 +24,5 @@ func (s *articleGRPCServer) GetArticle(ctx context.Context, req *libraryservice.
 		Description: a.Body,
 		Slug:        a.Slug,
 	}
-	return &libraryservice.GetArticleResponse{Article: article}, nil
+	return &libraryservice.GetArticleBySlugResponse{Article: article}, nil
 }

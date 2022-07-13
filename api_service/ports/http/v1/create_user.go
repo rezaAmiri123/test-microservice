@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/opentracing/opentracing-go"
-	"github.com/rezaAmiri123/test-microservice/api_service/domain/dto"
+	"github.com/rezaAmiri123/test-microservice/api_service/dto"
 	"net/http"
 )
 
