@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"time"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -9,6 +11,15 @@ import (
 	"github.com/rezaAmiri123/test-microservice/api_service/metrics"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
+)
+
+const (
+	maxHeaderBytes = 1 << 20
+	stackSize      = 1 << 10 // 1 KB
+	bodyLimit      = "2M"
+	readTimeout    = 15 * time.Second
+	writeTimeout   = 15 * time.Second
+	gzipLevel      = 5
 )
 
 type HttpServer struct {
@@ -34,8 +45,25 @@ func NewHttpServer(
 	}
 	//router := newEchoRouter(httpServer)
 	e := echo.New()
+
+	e.Server.ReadTimeout = readTimeout
+	e.Server.WriteTimeout = writeTimeout
+	e.Server.MaxHeaderBytes = maxHeaderBytes
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		StackSize:         stackSize,
+		DisablePrintStack: true,
+		DisableStackAll:   true,
+	}))
+	e.Use(middleware.RequestID())
+	e.Use(middleware.BodyLimit(bodyLimit))
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderXRequestID},
+	}))
+
 	v1 := e.Group("/api/v1")
 
 	userGroup := v1.Group("/users")

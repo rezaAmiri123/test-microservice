@@ -19,7 +19,7 @@ type Pagination struct {
 
 // NewPaginationQuery Pagination query constructor
 func NewPaginationQuery(size int, page int) *Pagination {
-	return &Pagination{Size: size, Page: 1}
+	return &Pagination{Size: size, Page: page}
 }
 
 func NewPaginationFromQueryParams(size string, page string) *Pagination {
