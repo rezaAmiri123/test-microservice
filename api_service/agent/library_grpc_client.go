@@ -1,28 +1,46 @@
 package agent
 
 import (
+	"context"
 	"fmt"
+	"time"
 
+	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
+	"github.com/rezaAmiri123/test-microservice/pkg/interceptors"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
+)
+
+const (
+	backoffLinear  = 100 * time.Millisecond
+	backoffRetries = 3
 )
 
 func (a *Agent) getLibraryClient() (grpc.ClientConnInterface, error) {
 	// addr := fmt.Sprintf("%s:%d", config.GRPCUserAddr, config.GRPCUserPort)
+	im := interceptors.NewInterceptorManager(a.logger)
 	addr := fmt.Sprintf("%s:%d", a.GRPCLibraryClientAddr, a.GRPCLibraryClientPort)
+	ctx := context.Background()
+
+	retryOpts := []grpc_retry.CallOption{
+		grpc_retry.WithBackoff(grpc_retry.BackoffLinear(backoffLinear)),
+		grpc_retry.WithCodes(codes.NotFound, codes.Aborted),
+		grpc_retry.WithMax(backoffRetries),
+	}
+
 	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithChainUnaryInterceptor(
+		grpc_retry.UnaryClientInterceptor(retryOpts...),
+		im.ClientRequestLoggerInterceptor(),
+	))
+
 	if a.GRPCLibraryClientTLSConfig != nil {
 		clientCreds := credentials.NewTLS(a.GRPCLibraryClientTLSConfig)
 		opts = append(opts, grpc.WithTransportCredentials(clientCreds))
 	} else {
 		opts = append(opts, grpc.WithInsecure())
 	}
-	//conn, err := grpc.Dial(addr, opts...)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//authClient := libraryapi.NewArticleServiceClient(conn)
-	//userAuthClient, _ := auth.NewUserAuthClient(authClient)
-	//a.AuthClient = userAuthClient
-	return grpc.Dial(addr, opts...)
+
+	return grpc.DialContext(ctx, addr, opts...)
 }

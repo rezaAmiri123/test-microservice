@@ -9,6 +9,13 @@ const (
 	WorkerID  = "workerID"
 	Offset    = "offset"
 	Time      = "time"
+
+	GRPC     = "GRPC"
+	METHOD   = "METHOD"
+	METADATA = "METADATA"
+	REQUEST  = "REQUEST"
+	REPLY    = "REPLY"
+	TIME     = "TIME"
 )
 
 // Logger methods interface
@@ -33,4 +40,6 @@ type Logger interface {
 	WithName(name string)
 	KafkaProcessMessage(topic string, partition int, message string, workerID int, offset int64, time time.Time)
 	KafkaLogCommittedMessage(topic string, partition int, offset int64)
+	GrpcMiddlewareAccessLogger(method string, time time.Duration, metaData map[string][]string, err error)
+	GrpcClientInterceptorLogger(method string, req interface{}, reply interface{}, time time.Duration, metaData map[string][]string, err error)
 }

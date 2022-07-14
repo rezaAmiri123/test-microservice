@@ -32,7 +32,6 @@ func NewAppLogger(cfg Config) logger.Logger {
 	return &appLogger{level: cfg.LogLevel, devMode: cfg.DevMode, encoding: cfg.Encoder}
 }
 
-
 // For mapping config logger to email_service logger levels
 var loggerLevelMap = map[string]zapcore.Level{
 	"debug":  zapcore.DebugLevel,
@@ -133,6 +132,7 @@ func (l *appLogger) Warn(args ...interface{}) {
 func (l *appLogger) WarnMsg(msg string, err error) {
 	l.logger.Warn(msg, zap.String("error", err.Error()))
 }
+
 // Warnf uses fmt.Sprintf to log a templated message.
 func (l *appLogger) Warnf(template string, args ...interface{}) {
 	l.sugarLogger.Warnf(template, args...)
@@ -189,7 +189,7 @@ func (l *appLogger) Fatalf(template string, args ...interface{}) {
 	l.sugarLogger.Fatalf(template, args...)
 }
 
-func (l *appLogger)KafkaProcessMessage(topic string, partition int, message string, workerID int, offset int64, time time.Time){
+func (l *appLogger) KafkaProcessMessage(topic string, partition int, message string, workerID int, offset int64, time time.Time) {
 	l.logger.Debug(
 		"Processing Kafka message",
 		zap.String(logger.Topic, topic),
@@ -200,11 +200,33 @@ func (l *appLogger)KafkaProcessMessage(topic string, partition int, message stri
 		zap.Time(logger.Time, time),
 	)
 }
-func (l *appLogger)KafkaLogCommittedMessage(topic string, partition int, offset int64){
+func (l *appLogger) KafkaLogCommittedMessage(topic string, partition int, offset int64) {
 	l.logger.Info(
 		"Committed Kafka message",
 		zap.String(logger.Topic, topic),
 		zap.Int(logger.Partition, partition),
 		zap.Int64(logger.Offset, offset),
+	)
+}
+
+func (l *appLogger) GrpcMiddlewareAccessLogger(method string, time time.Duration, metaData map[string][]string, err error) {
+	l.logger.Info(
+		logger.GRPC,
+		zap.String(logger.METHOD, method),
+		zap.Duration(logger.TIME, time),
+		zap.Any(logger.METADATA, metaData),
+		zap.Error(err),
+	)
+}
+
+func (l *appLogger) GrpcClientInterceptorLogger(method string, req, reply interface{}, time time.Duration, metaData map[string][]string, err error) {
+	l.logger.Info(
+		logger.GRPC,
+		zap.String(logger.METHOD, method),
+		zap.Any(logger.REQUEST, req),
+		zap.Any(logger.REPLY, reply),
+		zap.Duration(logger.TIME, time),
+		zap.Any(logger.METADATA, metaData),
+		zap.Error(err),
 	)
 }
