@@ -1,0 +1,45 @@
+definitions:
+  article.Article:
+    properties:
+      body:
+        type: string
+      description:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+      user_uuid:
+        type: string
+      uuid:
+        type: string
+    required:
+    - body
+    - title
+    type: object
+  dto.CreateArticleResponse:
+    properties:
+      article:
+        $ref: '#/definitions/article.Article'
+        type: object
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /articles/create:
+    post:
+      consumes:
+      - application/json
+      description: Create article handler
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateArticleResponse'
+      summary: Create article
+      tags:
+      - Articles
+swagger: "2.0"

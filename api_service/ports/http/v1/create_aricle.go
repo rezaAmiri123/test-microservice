@@ -10,6 +10,15 @@ import (
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 )
 
+// CreateArticle
+// Create godoc
+// @Summary Create article
+// @Description Create article handler
+// @Tags Articles
+// @Accept json
+// @Produce json
+// @Success 201 {object} dto.CreateArticleResponse
+// @Router /articles/create [post]
 func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		h.metrics.CreateArticleHttpRequests.Inc()
@@ -17,13 +26,14 @@ func (h *HttpServer) CreateArticle() echo.HandlerFunc {
 		span, ctx := opentracing.StartSpanFromContext(c.Request().Context(), "HttpServer.CreateArticle")
 		defer span.Finish()
 
-		u, err := h.authClient.VerifyToken(ctx, auth.GetTokenFromHeader(c.Request()))
-		if err != nil {
-			h.log.WarnMsg("verify token", err)
-			h.traceErr(span, err)
-			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		}
+		//u, err := h.authClient.VerifyToken(ctx, auth.GetTokenFromHeader(c.Request()))
+		//if err != nil {
+		//	h.log.WarnMsg("verify token", err)
+		//	h.traceErr(span, err)
+		//	return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		//}
 
+		u := auth.UserFromCtx(c.Request().Context())
 		req := &dto.CreateArticleRequest{}
 		if err := c.Bind(req); err != nil {
 			h.log.WarnMsg("Bind", err)

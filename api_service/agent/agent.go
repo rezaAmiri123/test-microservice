@@ -17,6 +17,8 @@ import (
 )
 
 type Config struct {
+	Debug bool
+
 	HttpServerAddr string
 	HttpServerPort int
 	//GRPCServerAddr          string

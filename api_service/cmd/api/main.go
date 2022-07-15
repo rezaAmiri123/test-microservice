@@ -40,6 +40,7 @@ type cfg struct {
 
 func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("config-file", "", "path to config file.")
+	cmd.Flags().Bool("debug", false, "debug service")
 	cmd.Flags().String("http-server-addr", "", "http server address.")
 	cmd.Flags().Int("http-server-port", 8380, "http server port.")
 	cmd.Flags().String("grpc-server-addr", "", "grpc server address.")
@@ -89,7 +90,7 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
-
+	c.cfg.Debug = viper.GetBool("debug")
 	c.cfg.HttpServerAddr = viper.GetString("http-server-addr")
 	c.cfg.HttpServerPort = viper.GetInt("http-server-port")
 	c.cfg.GRPCAuthClientAddr = viper.GetString("auth-grpc-server-addr")

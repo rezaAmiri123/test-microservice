@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"strings"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -9,8 +10,11 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/rezaAmiri123/test-microservice/api_service/app"
 	"github.com/rezaAmiri123/test-microservice/api_service/metrics"
+	apimiddleware "github.com/rezaAmiri123/test-microservice/api_service/ports/http/middleware"
+	"github.com/rezaAmiri123/test-microservice/docs"
 	"github.com/rezaAmiri123/test-microservice/pkg/auth"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 const (
@@ -31,6 +35,7 @@ type HttpServer struct {
 }
 
 func NewHttpServer(
+	debug bool,
 	application *app.Application,
 	metrics *metrics.ApiServiceMetric,
 	log logger.Logger,
@@ -43,6 +48,7 @@ func NewHttpServer(
 		log:        log,
 		authClient: authClient,
 	}
+	mw := apimiddleware.NewMiddlewareManager(log, authClient)
 	//router := newEchoRouter(httpServer)
 	e := echo.New()
 
@@ -50,8 +56,16 @@ func NewHttpServer(
 	e.Server.WriteTimeout = writeTimeout
 	e.Server.MaxHeaderBytes = maxHeaderBytes
 
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Title = "API Gateway"
+	docs.SwaggerInfo.Description = "API Gateway test microservices."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.BasePath = "/api/v1"
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
 	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	//e.Use(mw.RequestLoggerMiddleware)
 	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
 		StackSize:         stackSize,
 		DisablePrintStack: true,
@@ -63,6 +77,19 @@ func NewHttpServer(
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderXRequestID},
 	}))
+	if debug {
+		e.Use(mw.DebugMiddleware)
+	}
+	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+		Skipper: func(c echo.Context) bool {
+			if strings.Contains(c.Request().URL.Path, "swagger") {
+				return true
+			}
+			return false
+		},
+	}))
+
+	//e.Use(mw.RateLimitMiddleware())
 
 	v1 := e.Group("/api/v1")
 
@@ -71,8 +98,8 @@ func NewHttpServer(
 	userGroup.POST("/login", httpServer.UserLogin())
 
 	articleGroup := v1.Group("/articles")
-	articleGroup.POST("/create", httpServer.CreateArticle())
-	articleGroup.GET("/list", httpServer.GetArticles())
+	articleGroup.POST("/create", httpServer.CreateArticle(), mw.AuthMiddleware)
+	articleGroup.GET("/list", httpServer.GetArticles(), mw.RateLimitMiddleware())
 	articleGroup.GET("/article/:slug", httpServer.GetArticleBySlug())
 	return e, nil
 }

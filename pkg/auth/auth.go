@@ -2,16 +2,38 @@ package auth
 
 import (
 	"context"
+	"errors"
 )
 
-type AuthClient interface {
-	Login(ctx context.Context, username, password string) (string, error)
-	VerifyToken(ctx context.Context, token string) (*User, error)
+type ctxKey int
+
+const (
+	UserContextKey ctxKey = iota
+)
+
+var (
+	// if we expect that the user of the function may be interested with concrete error,
+	// it's a good idea to provide variable with this error
+	NoUserInContextError = errors.New("no user found")
+)
+
+func UserFromCtx(ctx context.Context) *User {
+	u, ok := ctx.Value(UserContextKey).(*User)
+	if ok {
+		return u
+	}
+
+	return &User{}
 }
 
 type User struct {
 	Username string
 	UUID     string
+}
+
+type AuthClient interface {
+	Login(ctx context.Context, username, password string) (string, error)
+	VerifyToken(ctx context.Context, token string) (*User, error)
 }
 
 //

@@ -1,0 +1,70 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/articles/create": {
+            "post": {
+                "description": "Create article handler",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Create article",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateArticleResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "article.Article": {
+            "type": "object",
+            "required": [
+                "body",
+                "title"
+            ],
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_uuid": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateArticleResponse": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "type": "object",
+                    "$ref": "#/definitions/article.Article"
+                }
+            }
+        }
+    }
+}

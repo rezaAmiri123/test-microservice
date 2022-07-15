@@ -104,3 +104,10 @@ k8s_update:
 k8s_uninstall:
 	helm uninstall test-microservice 
 	helm uninstall kafka 
+
+#=====================================================
+# swagger
+swagger:
+	echo "Starting swagger generating"
+	#swag init -g api_service/ports/http/**/*.go
+	swag init -g **/**/*.go  --parseDependency

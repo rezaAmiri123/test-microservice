@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
 
@@ -27,7 +26,7 @@ func (m UserHttpMiddleware) Middleware(next http.Handler) http.Handler {
 			http.Error(w, "unable verify", http.StatusForbidden)
 			return
 		}
-		ctx = context.WithValue(ctx, userContextKey, User{
+		ctx = context.WithValue(ctx, UserContextKey, User{
 			UUID:     tokenUser.GetUuid(),
 			Username: tokenUser.GetUsername(),
 		})
@@ -55,23 +54,23 @@ func GetTokenFromHeader(r *http.Request) string {
 	return ""
 }
 
-type ctxKey int
+//type ctxKey int
+//
+//const (
+//	userContextKey ctxKey = iota
+//)
 
-const (
-	userContextKey ctxKey = iota
-)
+//var (
+//	// if we expect that the user of the function may be interested with concrete error,
+//	// it's a good idea to provide variable with this error
+//	NoUserInContextError = errors.New("no user in context")
+//)
 
-var (
-	// if we expect that the user of the function may be interested with concrete error,
-	// it's a good idea to provide variable with this error
-	NoUserInContextError = errors.New("no user in context")
-)
-
-func UserFromCtx(ctx context.Context) (User, error) {
-	u, ok := ctx.Value(userContextKey).(User)
-	if ok {
-		return u, nil
-	}
-
-	return User{}, NoUserInContextError
-}
+//func UserFromCtx(ctx context.Context) (User, error) {
+//	u, ok := ctx.Value(userContextKey).(User)
+//	if ok {
+//		return u, nil
+//	}
+//
+//	return User{}, NoUserInContextError
+//}
