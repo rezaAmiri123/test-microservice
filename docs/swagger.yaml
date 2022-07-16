@@ -17,6 +17,18 @@ definitions:
     - body
     - title
     type: object
+  dto.CreateArticleRequest:
+    properties:
+      body:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+    required:
+    - body
+    - title
+    type: object
   dto.CreateArticleResponse:
     properties:
       article:
@@ -32,6 +44,18 @@ paths:
       consumes:
       - application/json
       description: Create article handler
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: New Article
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateArticleRequest'
       produces:
       - application/json
       responses:
@@ -39,6 +63,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/dto.CreateArticleResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create article
       tags:
       - Articles
