@@ -16,19 +16,6 @@ func (h *HttpServer) GetArticleBySlug() echo.HandlerFunc {
 		defer span.Finish()
 
 		req := &dto.GetArticleBySlugRequest{Slug: c.Param("slug")}
-		//c.QueryParam("slug")
-		//if err := c.Bind(req); err != nil {
-		//	h.log.WarnMsg("Bind", err)
-		//	h.traceErr(span, err)
-		//	return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		//}
-		//
-		//if err := h.validate.StructCtx(ctx, req); err != nil {
-		//	h.log.WarnMsg("validate", err)
-		//	h.traceErr(span, err)
-		//	return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		//}
-
 		res, err := h.app.Queries.GetArticleBySlug.Handle(ctx, req)
 		if err != nil {
 			h.log.WarnMsg("GetArticleBySlug", err)
