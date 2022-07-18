@@ -2,6 +2,9 @@ package v1_test
 
 import (
 	"context"
+	"fmt"
+	"github.com/rezaAmiri123/test-microservice/api_service/app/query"
+	"math/rand"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -20,11 +23,13 @@ import (
 )
 
 type TestHttpServer struct {
-	echoServer        *echo.Echo
-	logger            logger.Logger
-	producerMock      *kafkaMock.MockProducer
-	authClientMock    *authMock.MockAuthClient
-	articleClientMock libraryapi.ArticleServiceClient
+	echoServer     *echo.Echo
+	logger         logger.Logger
+	producerMock   *kafkaMock.MockProducer
+	authClientMock *authMock.MockAuthClient
+	//articleClientMock libraryapi.ArticleServiceClient
+	articleClientMock *ArticleClientMock
+	Metric            *metrics.ApiServiceMetric
 }
 
 func NewTestHttpServer(t *testing.T, ctrl *gomock.Controller) *TestHttpServer {
@@ -33,10 +38,19 @@ func NewTestHttpServer(t *testing.T, ctrl *gomock.Controller) *TestHttpServer {
 	appLogger := getLogger()
 	producerMock := kafkaMock.NewMockProducer(ctrl)
 	authClientMock := authMock.NewMockAuthClient(ctrl)
-	application := &app.Application{Commands: app.Commands{
-		CreateArticle: command.NewCreateArticleHandler(producerMock, appLogger),
-	}}
-	metric := metrics.NewApiServiceMetric(&metrics.Config{})
+	articleClientMock := &ArticleClientMock{}
+
+	application := &app.Application{
+		Commands: app.Commands{
+			CreateArticle: command.NewCreateArticleHandler(producerMock, appLogger),
+		},
+		Queries: app.Queries{
+			GetArticleBySlug: query.NewGetArticleBySlugHandler(articleClientMock, appLogger),
+		},
+	}
+	metric := metrics.NewApiServiceMetric(&metrics.Config{
+		ServiceName: fmt.Sprintf("rand%d", rand.Int()),
+	})
 
 	echoServer, err := v1.NewHttpServer(false, application, metric, appLogger, authClientMock)
 	require.NoError(t, err)
@@ -46,7 +60,8 @@ func NewTestHttpServer(t *testing.T, ctrl *gomock.Controller) *TestHttpServer {
 		logger:            appLogger,
 		authClientMock:    authClientMock,
 		producerMock:      producerMock,
-		articleClientMock: &ArticleClientMock{},
+		articleClientMock: articleClientMock,
+		Metric:            metric,
 	}
 	return testServer
 }
@@ -75,10 +90,10 @@ func (m *ArticleClientMock) SetArticlesResponse(article *libraryapi.GetArticlesR
 func (m *ArticleClientMock) SetError(err error) {
 	m.Err = err
 }
-func (m *ArticleClientMock) GetArticleBySlug(ctx context.Context, in *libraryapi.GetArticleBySlugRequest, opts ...grpc.CallOption) (*libraryapi.GetArticleBySlugResponse, error) {
+func (m ArticleClientMock) GetArticleBySlug(ctx context.Context, in *libraryapi.GetArticleBySlugRequest, opts ...grpc.CallOption) (*libraryapi.GetArticleBySlugResponse, error) {
 	return m.ArticleBySlugResponse, m.Err
 }
 
-func (m *ArticleClientMock) GetArticles(ctx context.Context, in *libraryapi.GetArticlesRequest, opts ...grpc.CallOption) (*libraryapi.GetArticlesResponse, error) {
+func (m ArticleClientMock) GetArticles(ctx context.Context, in *libraryapi.GetArticlesRequest, opts ...grpc.CallOption) (*libraryapi.GetArticlesResponse, error) {
 	return m.ArticlesResponse, m.Err
 }
