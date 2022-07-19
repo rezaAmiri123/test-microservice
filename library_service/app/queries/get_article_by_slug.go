@@ -9,7 +9,7 @@ type GetArticleBySlugHandler struct {
 	repo article.Repository
 }
 
-func NewGetArticleHandler(repo article.Repository) *GetArticleBySlugHandler {
+func NewGetArticleBySlugHandler(repo article.Repository) *GetArticleBySlugHandler {
 	if repo == nil {
 		panic("article repo is nil")
 	}

@@ -12,15 +12,15 @@ type Config struct {
 	App    *app.Application
 }
 
-var _ libraryservice.ArticleServiceServer = (*articleGRPCServer)(nil)
+var _ libraryservice.ArticleServiceServer = (*ArticleGRPCServer)(nil)
 
-type articleGRPCServer struct {
+type ArticleGRPCServer struct {
 	cfg *Config
 	libraryservice.UnimplementedArticleServiceServer
 }
 
-func newArticleGRPCServer(config *Config) (*articleGRPCServer, error) {
-	srv := &articleGRPCServer{
+func NewArticleGRPCServer(config *Config) (*ArticleGRPCServer, error) {
+	srv := &ArticleGRPCServer{
 		cfg: config,
 	}
 	return srv, nil
@@ -28,7 +28,7 @@ func newArticleGRPCServer(config *Config) (*articleGRPCServer, error) {
 
 func NewGRPCServer(config *Config, opts ...grpc.ServerOption) (*grpc.Server, error) {
 	gsrv := grpc.NewServer(opts...)
-	srv, err := newArticleGRPCServer(config)
+	srv, err := NewArticleGRPCServer(config)
 	if err != nil {
 		return nil, err
 	}

@@ -66,16 +66,16 @@ func (mr *MockRepositoryMockRecorder) GetBySlug(ctx, slug interface{}) *gomock.C
 }
 
 // List mocks base method.
-func (m *MockRepository) List(ctx context.Context, page *pagnation.Pagination) (*article.ArticleList, error) {
+func (m *MockRepository) List(ctx context.Context, query *pagnation.Pagination) (*article.ArticleList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", ctx, page)
+	ret := m.ctrl.Call(m, "List", ctx, query)
 	ret0, _ := ret[0].(*article.ArticleList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List.
-func (mr *MockRepositoryMockRecorder) List(ctx, page interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) List(ctx, query interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRepository)(nil).List), ctx, page)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRepository)(nil).List), ctx, query)
 }
