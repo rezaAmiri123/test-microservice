@@ -1,6 +1,7 @@
 package publisher
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -45,12 +46,12 @@ const (
 // Publisher rabbitmq publisher
 type Publisher struct {
 	amqpChan *amqp.Channel
-	cfg      *rabbitmq.Config
+	cfg      rabbitmq.Config
 	logger   logger.Logger
 }
 
 // NewEmailsPublisher Emails rabbitmq publisher constructor
-func NewPublisher(cfg *rabbitmq.Config, logger logger.Logger) (*Publisher, error) {
+func NewPublisher(cfg rabbitmq.Config, logger logger.Logger) (*Publisher, error) {
 	mqConn, err := rabbitmq.NewRabbitMQConn(cfg)
 	if err != nil {
 		return nil, err
@@ -123,7 +124,7 @@ func (p *Publisher) CloseChan() {
 }
 
 // Publish message
-func (p *Publisher) Publish(body []byte, contentType string) error {
+func (p *Publisher) Publish(ctx context.Context, body []byte, contentType string) error {
 
 	p.logger.Infof("Publishing message Exchange: %s, RoutingKey: %s", p.cfg.Exchange, p.cfg.RoutingKey)
 

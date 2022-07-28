@@ -15,5 +15,6 @@ type Queries struct {
 }
 
 type Commands struct {
-	CreateEmail *commands.CreateEmailHandler
+	CreateEmail          *commands.CreateEmailHandler
+	CreateEmailWithQueue *commands.CreateEmailWithQueueHandler
 }

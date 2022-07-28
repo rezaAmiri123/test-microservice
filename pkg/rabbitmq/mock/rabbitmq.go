@@ -5,9 +5,11 @@
 package mock
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	rabbitmq "github.com/rezaAmiri123/test-microservice/pkg/rabbitmq"
 )
 
 // MockPublisher is a mock of Publisher interface.
@@ -34,17 +36,17 @@ func (m *MockPublisher) EXPECT() *MockPublisherMockRecorder {
 }
 
 // Publish mocks base method.
-func (m *MockPublisher) Publish(body []byte, contentType string) error {
+func (m *MockPublisher) Publish(ctx context.Context, body []byte, contentType string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Publish", body, contentType)
+	ret := m.ctrl.Call(m, "Publish", ctx, body, contentType)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Publish indicates an expected call of Publish.
-func (mr *MockPublisherMockRecorder) Publish(body, contentType interface{}) *gomock.Call {
+func (mr *MockPublisherMockRecorder) Publish(ctx, body, contentType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockPublisher)(nil).Publish), body, contentType)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockPublisher)(nil).Publish), ctx, body, contentType)
 }
 
 // MockConsumer is a mock of Consumer interface.
@@ -71,15 +73,15 @@ func (m *MockConsumer) EXPECT() *MockConsumerMockRecorder {
 }
 
 // StartConsumer mocks base method.
-func (m *MockConsumer) StartConsumer(workerPoolSize int, exchange, queueName, bindingKey, consumerTag string) error {
+func (m *MockConsumer) StartConsumer(ctx context.Context, workerPoolSize int, exchange, queueName, bindingKey, consumerTag string, worker rabbitmq.Worker) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartConsumer", workerPoolSize, exchange, queueName, bindingKey, consumerTag)
+	ret := m.ctrl.Call(m, "StartConsumer", ctx, workerPoolSize, exchange, queueName, bindingKey, consumerTag, worker)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // StartConsumer indicates an expected call of StartConsumer.
-func (mr *MockConsumerMockRecorder) StartConsumer(workerPoolSize, exchange, queueName, bindingKey, consumerTag interface{}) *gomock.Call {
+func (mr *MockConsumerMockRecorder) StartConsumer(ctx, workerPoolSize, exchange, queueName, bindingKey, consumerTag, worker interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartConsumer", reflect.TypeOf((*MockConsumer)(nil).StartConsumer), workerPoolSize, exchange, queueName, bindingKey, consumerTag)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartConsumer", reflect.TypeOf((*MockConsumer)(nil).StartConsumer), ctx, workerPoolSize, exchange, queueName, bindingKey, consumerTag, worker)
 }

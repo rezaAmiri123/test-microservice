@@ -14,3 +14,11 @@ func AnyToBytesBuffer(i interface{}) (*bytes.Buffer, error) {
 	}
 	return buf, nil
 }
+
+//func BytesBufferToStruct(buf *bytes.Buffer) (interface{}, error) {
+func BytesToStruct(byteData []byte) (interface{}, error) {
+	reader := bytes.NewReader(byteData)
+	var i interface{}
+	err := json.NewDecoder(reader).Decode(i)
+	return i, err
+}

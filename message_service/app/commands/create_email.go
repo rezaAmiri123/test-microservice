@@ -10,7 +10,7 @@ type CreateEmailHandler struct {
 	Repo email.Repository
 }
 
-func NewCreateUserHandler(repo email.Repository) *CreateEmailHandler {
+func NewCreateEmailHandler(repo email.Repository) *CreateEmailHandler {
 	if repo == nil {
 		panic("email Repo is nil")
 	}

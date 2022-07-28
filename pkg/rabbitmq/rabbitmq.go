@@ -2,6 +2,7 @@
 package rabbitmq
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/streadway/amqp"
@@ -18,20 +19,20 @@ type Config struct {
 	ConsumerTag    string
 	WorkerPoolSize int
 }
+type Worker func(ctx context.Context, messages <-chan amqp.Delivery)
 
 // Publisher interface
 type Publisher interface {
-	Publish(body []byte, contentType string) error
+	Publish(ctx context.Context, body []byte, contentType string) error
 }
 
 // Consumer interface
 type Consumer interface {
-	StartConsumer(workerPoolSize int, exchange, queueName, bindingKey, consumerTag string) error
+	StartConsumer(ctx context.Context, workerPoolSize int, exchange, queueName, bindingKey, consumerTag string, worker Worker) error
 }
 
-
 // NewRabbitMQConn Initialize new RabbitMQ connection
-func NewRabbitMQConn(cfg *Config) (*amqp.Connection, error) {
+func NewRabbitMQConn(cfg Config) (*amqp.Connection, error) {
 	connAddr := fmt.Sprintf(
 		"amqp://%s:%s@%s:%d/",
 		cfg.User,

@@ -1,0 +1,24 @@
+syntax="proto3";
+
+package message;
+
+option go_package="github.com/rezaAmiri123/test-microservice/message_service/proto/grpc";
+
+service MessageService {
+  rpc CreateEmail(CreateEmailRequest) returns (CreateEmailResponse){}
+}
+
+message Email {
+  string Subject = 1;
+  repeated  string To = 2;
+  string From = 3;
+  string Body = 4;
+}
+
+message CreateEmailRequest {
+  Email email = 1;
+}
+
+message CreateEmailResponse {
+  string UUID = 1;
+}

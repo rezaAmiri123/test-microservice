@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"github.com/rezaAmiri123/test-microservice/pkg/rabbitmq"
 	"io"
 	"net/http"
 	"sync"
@@ -19,11 +20,12 @@ import (
 
 type Config struct {
 	//DBConfig     adapters.GORMConfig
-	DBConfig     postgres.Config
-	LoggerConfig applogger.Config
-	TracerConfig tracing.Config
-	MetricConfig metrics.Config
-	KafkaConfig  kafkatopics.Config
+	DBConfig       postgres.Config
+	LoggerConfig   applogger.Config
+	TracerConfig   tracing.Config
+	MetricConfig   metrics.Config
+	KafkaConfig    kafkatopics.Config
+	RabbitmqConfig rabbitmq.Config
 }
 
 type Agent struct {
