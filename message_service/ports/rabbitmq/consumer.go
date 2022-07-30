@@ -160,14 +160,14 @@ func (c *MessageConsumer) CreateChannel(exchangeName, queueName, bindingKey, con
 
 // StartConsumer Start new rabbitmq consumer
 func (c *MessageConsumer) StartConsumer(ctx context.Context, workerPoolSize int, exchange, queueName, bindingKey, consumerTag string, worker rabbitmq.Worker) error {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	//ctx, cancel := context.WithCancel(ctx)
+	//defer cancel()
 
 	ch, err := c.CreateChannel(exchange, queueName, bindingKey, consumerTag)
 	if err != nil {
 		return errors.Wrap(err, "CreateChannel")
 	}
-	defer ch.Close()
+	//defer ch.Close()
 
 	deliveries, err := ch.Consume(
 		queueName,
@@ -187,7 +187,8 @@ func (c *MessageConsumer) StartConsumer(ctx context.Context, workerPoolSize int,
 		go worker(ctx, deliveries)
 	}
 
-	chanErr := <-ch.NotifyClose(make(chan *amqp.Error))
-	c.logger.Errorf("ch.NotifyClose: %v", chanErr)
-	return chanErr
+	//chanErr := <-ch.NotifyClose(make(chan *amqp.Error))
+	//c.logger.Errorf("ch.NotifyClose: %v", chanErr)
+	//return chanErr
+	return nil
 }

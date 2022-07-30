@@ -23,7 +23,7 @@ func (s *MessageGRPCServer) CreateEmail(ctx context.Context, req *messageservice
 	}
 	resEmail, err := s.cfg.App.Commands.CreateEmailWithQueue.Handle(ctx, reqEmail)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "article not found")
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 	return &messageservice.CreateEmailResponse{UUID: resEmail.UUID}, nil
 }

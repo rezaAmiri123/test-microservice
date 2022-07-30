@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/rezaAmiri123/test-microservice/message_service/agent"
+	"github.com/rezaAmiri123/test-microservice/pkg/auth/tls"
+	"github.com/rezaAmiri123/test-microservice/pkg/kafka"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -34,14 +35,15 @@ type cli struct {
 
 type cfg struct {
 	agent.Config
+	GrpcServerTLSConfig tls.TLSConfig
 }
 
 func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("config-file", "", "path to config file.")
 	//cmd.Flags().String("http-server-addr", "", "http server address.")
 	//cmd.Flags().Int("http-server-port", 8280, "http server port.")
-	//cmd.Flags().String("grpc-server-addr", "", "grpc server address.")
-	//cmd.Flags().Int("grpc-server-port", 8281, "grpc server port.")
+	cmd.Flags().String("grpc-server-addr", "", "grpc server address.")
+	cmd.Flags().Int("grpc-server-port", 8481, "grpc server port.")
 	//cmd.Flags().String("auth-grpc-server-addr", "user_service", "auth grpc server address.")
 	//cmd.Flags().Int("auth-grpc-server-port", 8181, "auth grpc server port.")
 	cmd.Flags().String("database-type", "pgx", "database type like mysql.")
@@ -69,6 +71,10 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("rabbitmq-consumer-tag", "rabbitmq", "rabbitmq consumer tag.")
 	cmd.Flags().Int("rabbitmq-worker-pool-size", 4, "rabbitmq worker pool size.")
 
+	cmd.Flags().String("grpc-server-tls-cert-file", "", "Path to server tls cert.")
+	cmd.Flags().String("grpc-server-tls-key-file", "", "Path to server tls key.")
+	cmd.Flags().String("grpc-server-tls-ca-file", "", "Path to server certificate authority.")
+
 	return viper.BindPFlags(cmd.Flags())
 }
 
@@ -91,8 +97,8 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	//c.cfg.HttpServerPort = viper.GetInt("http-server-port")
 	//c.cfg.GRPCAuthClientAddr = viper.GetString("auth-grpc-server-addr")
 	//c.cfg.GRPCAuthClientPort = viper.GetInt("auth-grpc-server-port")
-	//c.cfg.GRPCServerAddr = viper.GetString("grpc-server-addr")
-	//c.cfg.GRPCServerPort = viper.GetInt("grpc-server-port")
+	c.cfg.GRPCServerAddr = viper.GetString("grpc-server-addr")
+	c.cfg.GRPCServerPort = viper.GetInt("grpc-server-port")
 	c.cfg.DBConfig.Driver = viper.GetString("database-type")
 	c.cfg.DBConfig.DBName = viper.GetString("database-name")
 	c.cfg.DBConfig.User = viper.GetString("database-username")
@@ -119,6 +125,22 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
 
 	c.cfg.KafkaConfig.KafkaTopics.EmailCreate.TopicName = kafka.CreateEmailTopic
+
+	c.cfg.GrpcServerTLSConfig.CertFile = viper.GetString("grpc-server-tls-cert-file")
+	c.cfg.GrpcServerTLSConfig.KeyFile = viper.GetString("grpc-server-tls-key-file")
+	c.cfg.GrpcServerTLSConfig.CAFile = viper.GetString("grpc-server-tls-ca-file")
+
+	if c.cfg.GrpcServerTLSConfig.CertFile != "" &&
+		c.cfg.GrpcServerTLSConfig.KeyFile != "" {
+		c.cfg.GrpcServerTLSConfig.Server = true
+		c.cfg.Config.ServerTLSConfig, err = tls.SetupTLSConfig(
+			c.cfg.GrpcServerTLSConfig,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

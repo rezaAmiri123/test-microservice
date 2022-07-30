@@ -18,7 +18,7 @@ type MessageGRPCServer struct {
 	messageservice.UnimplementedMessageServiceServer
 }
 
-func NewArticleGRPCServer(config *Config) (*MessageGRPCServer, error) {
+func NewMessageGRPCServer(config *Config) (*MessageGRPCServer, error) {
 	srv := &MessageGRPCServer{
 		cfg: config,
 	}
@@ -27,7 +27,7 @@ func NewArticleGRPCServer(config *Config) (*MessageGRPCServer, error) {
 
 func NewGRPCServer(config *Config, opts ...grpc.ServerOption) (*grpc.Server, error) {
 	gsrv := grpc.NewServer(opts...)
-	srv, err := NewArticleGRPCServer(config)
+	srv, err := NewMessageGRPCServer(config)
 	if err != nil {
 		return nil, err
 	}

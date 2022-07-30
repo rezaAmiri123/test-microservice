@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/rezaAmiri123/test-microservice/test/message_example"
+	"github.com/rezaAmiri123/test-microservice/test/grpc_example"
 
+	//"github.com/rezaAmiri123/test-microservice/test/message_example"
 	//"github.com/rezaAmiri123/test-microservice/test/kafka1"
 	"time"
 )
@@ -15,7 +16,8 @@ func main() {
 	// both the produce and consume functions are
 	// blocking
 	//kafka1.Produce(ctx)
-	message_example.Produce(ctx)
+	//message_example.Produce(ctx)
+	grpc_example.Client(ctx)
 	time.Sleep(time.Hour)
 	//kafka1.Consume(ctx)
 }

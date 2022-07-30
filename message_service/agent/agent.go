@@ -1,7 +1,7 @@
 package agent
 
 import (
-	"github.com/rezaAmiri123/test-microservice/pkg/rabbitmq"
+	"crypto/tls"
 	"io"
 	"net/http"
 	"sync"
@@ -13,12 +13,17 @@ import (
 	"github.com/rezaAmiri123/test-microservice/pkg/db/postgres"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
+	"github.com/rezaAmiri123/test-microservice/pkg/rabbitmq"
 	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
 	"google.golang.org/grpc"
 )
 
 type Config struct {
+	ServerTLSConfig *tls.Config
+
+	GRPCServerAddr string
+	GRPCServerPort int
 	//DBConfig     adapters.GORMConfig
 	DBConfig       postgres.Config
 	LoggerConfig   applogger.Config
@@ -60,7 +65,8 @@ func NewAgent(config Config) (*Agent, error) {
 		a.setupKafka,
 		//a.setupAuthClient,
 		//a.setupHttpServer,
-		//a.setupGrpcServer,
+		a.setupGrpcServer,
+		a.setupRabbitMQ,
 		//a.setupGRPCServer,
 		//a.setupTracer,
 	}
@@ -85,10 +91,10 @@ func (a *Agent) Shutdown() error {
 		//func() error {
 		//	return a.httpServer.Shutdown(context.Background())
 		//},
-		//func() error {
-		//	a.grpcServer.GracefulStop()
-		//	return nil
-		//},
+		func() error {
+			a.grpcServer.GracefulStop()
+			return nil
+		},
 		//func() error {
 		//	return a.jaegerCloser.Close()
 		//},
