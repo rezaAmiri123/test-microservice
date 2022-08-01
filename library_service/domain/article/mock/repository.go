@@ -50,6 +50,20 @@ func (mr *MockRepositoryMockRecorder) Create(ctx, article interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRepository)(nil).Create), ctx, article)
 }
 
+// CreateComment mocks base method.
+func (m *MockRepository) CreateComment(ctx context.Context, comment *article.Comment) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateComment", ctx, comment)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateComment indicates an expected call of CreateComment.
+func (mr *MockRepositoryMockRecorder) CreateComment(ctx, comment interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateComment", reflect.TypeOf((*MockRepository)(nil).CreateComment), ctx, comment)
+}
+
 // GetBySlug mocks base method.
 func (m *MockRepository) GetBySlug(ctx context.Context, slug string) (*article.Article, error) {
 	m.ctrl.T.Helper()

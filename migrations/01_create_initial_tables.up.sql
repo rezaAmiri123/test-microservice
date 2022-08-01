@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS articles CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS emails CASCADE;
 
 CREATE
@@ -24,11 +25,24 @@ CREATE TABLE articles
 
 CREATE INDEX IF NOT EXISTS articles_slug_id_idx ON articles (slug);
 
+CREATE TABLE comments
+(
+    uuid         VARCHAR(128) PRIMARY KEY NOT NULL CHECK ( uuid <> '' ),
+    user_uuid    VARCHAR(128)             NOT NULL CHECK ( user_uuid <> '' ),
+    article_uuid VARCHAR(128)             NOT NULL CHECK ( article_uuid <> '' ),
+    message      TEXT                     NOT NULL CHECK ( message <> '' ),
+    Likes        integer                  NOT NULL,
+    created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CREATE INDEX IF NOT EXISTS articles_slug_id_idx ON articles (slug);
+
 CREATE TABLE emails
 (
     uuid       VARCHAR(128) PRIMARY KEY NOT NULL CHECK ( uuid <> '' ),
-    from_       VARCHAR(128)             NOT NULL CHECK ( from_ <> '' ),
-    to_         TEXT                     NOT NULL CHECK ( to_ <> '' ),
+    from_      VARCHAR(128)             NOT NULL CHECK ( from_ <> '' ),
+    to_        TEXT                     NOT NULL CHECK ( to_ <> '' ),
     subject    VARCHAR(128)             NOT NULL CHECK ( subject <> '' ),
     body       TEXT                     NOT NULL CHECK ( body <> '' ),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

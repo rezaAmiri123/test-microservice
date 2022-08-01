@@ -17,4 +17,5 @@ type Queries struct {
 
 type Commands struct {
 	CreateArticle *commands.CreateArticleHandler
+	CreateComment *commands.CreateCommentHandler
 }

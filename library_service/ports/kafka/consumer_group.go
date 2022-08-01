@@ -39,6 +39,8 @@ func (s *libraryMessageProcessor) ProcessMessage(ctx context.Context, r *kafka.R
 		switch m.Topic {
 		case s.cfg.KafkaTopics.ArticleCreate.TopicName:
 			s.processCreateArticle(ctx, r, m)
+		case s.cfg.KafkaTopics.CommentCreate.TopicName:
+			s.processCreateComment(ctx, r, m)
 		}
 	}
 }

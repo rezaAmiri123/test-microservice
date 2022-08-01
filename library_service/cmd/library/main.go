@@ -114,6 +114,7 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.KafkaConfig.Kafka.InitTopics = viper.GetBool("kafka-service-init-topics")
 
 	c.cfg.KafkaConfig.KafkaTopics.ArticleCreate.TopicName = kafka.CreateArticleTopic
+	c.cfg.KafkaConfig.KafkaTopics.CommentCreate.TopicName = kafka.CreateCommentTopic
 
 	c.cfg.GrpcServerTLSConfig.CertFile = viper.GetString("grpc-server-tls-cert-file")
 	c.cfg.GrpcServerTLSConfig.KeyFile = viper.GetString("grpc-server-tls-key-file")

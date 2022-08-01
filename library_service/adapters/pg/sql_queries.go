@@ -26,4 +26,7 @@ const (
 						FROM articles 
 							ORDER BY created_at OFFSET $1 LIMIT $2`
 	totalArticleCountQuery = `SELECT COUNT (uuid) as totalCount FROM articles`
+
+	createComment = `INSERT INTO comments (uuid, user_uuid, article_uuid, message, likes, created_at, updated_at) 
+									VALUES ($1, $2, $3, $4, $5, now(), now())`
 )

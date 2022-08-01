@@ -2,6 +2,12 @@ package kafka
 
 import (
 	kafkaClient "github.com/rezaAmiri123/test-microservice/pkg/kafka"
+	"time"
+)
+
+const (
+	retryAttempts = 3
+	retryDelay    = 300 * time.Millisecond
 )
 
 type Config struct {
@@ -10,4 +16,5 @@ type Config struct {
 }
 type KafkaTopics struct {
 	ArticleCreate kafkaClient.TopicConfig
+	CommentCreate kafkaClient.TopicConfig
 }

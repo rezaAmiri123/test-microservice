@@ -20,5 +20,6 @@ const (
 
 	CreateUserTopic    = "CreateUser"
 	CreateArticleTopic = "CreateArticle"
+	CreateCommentTopic = "CreateComment"
 	CreateEmailTopic   = "CreateEmail"
 )

@@ -20,6 +20,7 @@ func (a *Agent) setupApplication() error {
 	application := &app.Application{
 		Commands: app.Commands{
 			CreateArticle: commands.NewCreateArticleHandler(repo),
+			CreateComment: commands.NewCreateCommentHandler(repo),
 		},
 		Queries: app.Queries{
 			GetArticleBySlug: queries.NewGetArticleBySlugHandler(repo),

@@ -10,4 +10,6 @@ type Repository interface {
 	Create(ctx context.Context, article *Article) error
 	GetBySlug(ctx context.Context, slug string) (*Article, error)
 	List(ctx context.Context, query *pagnation.Pagination) (*ArticleList, error)
+
+	CreateComment(ctx context.Context, comment *Comment) error
 }
