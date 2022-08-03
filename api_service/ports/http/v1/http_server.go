@@ -117,6 +117,9 @@ func NewHttpServer(
 	articleGroup.POST("/create", httpServer.CreateArticle(), mw.AuthMiddleware)
 	articleGroup.GET("/list", httpServer.GetArticles(), mw.RateLimitMiddleware())
 	articleGroup.GET("/article/:slug", httpServer.GetArticleBySlug())
+
+	commentGroup := v1.Group("/comments")
+	commentGroup.POST("/create", httpServer.CreateComment(), mw.AuthMiddleware)
 	return e, nil
 }
 

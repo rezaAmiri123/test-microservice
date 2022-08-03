@@ -18,6 +18,7 @@ func (a *Agent) setupKafka() error {
 	//
 	topics := []string{
 		a.KafkaConfig.KafkaTopics.ArticleCreate.TopicName,
+		a.KafkaConfig.KafkaTopics.CommentCreate.TopicName,
 	}
 	// TODO we need a context to can ended goroutine
 	go cg.ConsumeTopic(ctx, topics, kafka.PoolSize, libraryMessageProcessor.ProcessMessage)

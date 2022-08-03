@@ -33,7 +33,9 @@ CREATE TABLE comments
     message      TEXT                     NOT NULL CHECK ( message <> '' ),
     Likes        integer                  NOT NULL,
     created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at   TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
+    updated_at   TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_carticle FOREIGN KEY (article_uuid) REFERENCES articles(uuid) ON DELETE CASCADE
+
 );
 
 -- CREATE INDEX IF NOT EXISTS articles_slug_id_idx ON articles (slug);

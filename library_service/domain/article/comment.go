@@ -12,7 +12,7 @@ type Comment struct {
 	UUID        string    `json:"uuid"`
 	UserUUID    string    `json:"user_uuid"`
 	ArticleUUID string    `json:"article_uuid"`
-	Article     Article   `json:"article"`
+	Article     *Article  `json:"article" validate:"excluded_with_all"`
 	Message     string    `json:"message" validate:"required,gte=10"`
 	Likes       int64     `json:"likes" validate:"omitempty"`
 	CreatedAt   time.Time `json:"created_at"`

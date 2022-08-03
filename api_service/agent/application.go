@@ -20,6 +20,7 @@ func (a *Agent) setupApplication() error {
 		Commands: app.Commands{
 			CreateUser:    command.NewCreateUserHandler(producer, a.logger),
 			CreateArticle: command.NewCreateArticleHandler(producer, a.logger),
+			CreateComment: command.NewCreateCommentHandler(producer, a.logger),
 		},
 		Queries: app.Queries{
 			GetArticleBySlug: query.NewGetArticleBySlugHandler(articleClient, a.logger),
