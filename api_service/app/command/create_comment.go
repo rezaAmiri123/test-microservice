@@ -2,6 +2,8 @@ package command
 
 import (
 	"context"
+	"time"
+
 	"github.com/opentracing/opentracing-go"
 	"github.com/rezaAmiri123/test-microservice/api_service/dto"
 	kafkaLibrary "github.com/rezaAmiri123/test-microservice/library_service/proto/kafka"
@@ -10,7 +12,6 @@ import (
 	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
 	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/proto"
-	"time"
 )
 
 type CreateCommentHandler struct {
