@@ -98,6 +98,7 @@ services:
       - zoo1
       - kafka
       - rabbitmq
+      - mongodb
     networks: [ "microservices" ]
 
   mysql:
@@ -240,6 +241,19 @@ services:
     # that's not explicitly published above.
     networks: [ "microservices" ]
 
+  mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGODB_DATABASE: database
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+    networks: [ "microservices" ]
+
 #volumes:
 #  my-db:
 volumes:
@@ -247,6 +261,7 @@ volumes:
   kafka_volumes:
   zoo_volumes:
   pgdata3:
+  mongodb_data_container:
 
 networks:
   microservices:

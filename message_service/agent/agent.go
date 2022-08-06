@@ -13,6 +13,7 @@ import (
 	"github.com/rezaAmiri123/test-microservice/pkg/db/postgres"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger/applogger"
+	"github.com/rezaAmiri123/test-microservice/pkg/mongodb"
 	"github.com/rezaAmiri123/test-microservice/pkg/rabbitmq"
 	"github.com/rezaAmiri123/test-microservice/pkg/tracing"
 	"github.com/rezaAmiri123/test-microservice/user_service/domain"
@@ -26,6 +27,7 @@ type Config struct {
 	GRPCServerPort int
 	//DBConfig     adapters.GORMConfig
 	DBConfig       postgres.Config
+	MongoConfig    mongodb.Config
 	LoggerConfig   applogger.Config
 	TracerConfig   tracing.Config
 	MetricConfig   metrics.Config
