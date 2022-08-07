@@ -120,6 +120,10 @@ func NewHttpServer(
 
 	commentGroup := v1.Group("/comments")
 	commentGroup.POST("/create", httpServer.CreateComment(), mw.AuthMiddleware)
+
+	messageGroup := v1.Group("/messages")
+	messageGroup.GET("/email/:uuid", httpServer.GetEmailByUUID(), mw.AuthMiddleware)
+
 	return e, nil
 }
 

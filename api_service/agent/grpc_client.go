@@ -2,14 +2,14 @@ package agent
 
 import (
 	"context"
-	"fmt"
+	"crypto/tls"
+	"google.golang.org/grpc/credentials"
 	"time"
 
 	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	"github.com/rezaAmiri123/test-microservice/pkg/interceptors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials"
 )
 
 const (
@@ -17,10 +17,10 @@ const (
 	backoffRetries = 3
 )
 
-func (a *Agent) getLibraryClient() (grpc.ClientConnInterface, error) {
+func (a *Agent) getGrpcClient(addr string, clientTLSConfig *tls.Config) (grpc.ClientConnInterface, error) {
 	// addr := fmt.Sprintf("%s:%d", config.GRPCUserAddr, config.GRPCUserPort)
 	im := interceptors.NewInterceptorManager(a.logger)
-	addr := fmt.Sprintf("%s:%d", a.GRPCLibraryClientAddr, a.GRPCLibraryClientPort)
+	//addr := fmt.Sprintf("%s:%d", a.GRPCLibraryClientAddr, a.GRPCLibraryClientPort)
 	ctx := context.Background()
 
 	retryOpts := []grpc_retry.CallOption{
@@ -35,8 +35,14 @@ func (a *Agent) getLibraryClient() (grpc.ClientConnInterface, error) {
 		im.ClientRequestLoggerInterceptor(),
 	))
 
-	if a.GRPCLibraryClientTLSConfig != nil {
-		clientCreds := credentials.NewTLS(a.GRPCLibraryClientTLSConfig)
+	//if a.GRPCLibraryClientTLSConfig != nil {
+	//	clientCreds := credentials.NewTLS(a.GRPCLibraryClientTLSConfig)
+	//	opts = append(opts, grpc.WithTransportCredentials(clientCreds))
+	//} else {
+	//	opts = append(opts, grpc.WithInsecure())
+	//}
+	if clientTLSConfig != nil {
+		clientCreds := credentials.NewTLS(clientTLSConfig)
 		opts = append(opts, grpc.WithTransportCredentials(clientCreds))
 	} else {
 		opts = append(opts, grpc.WithInsecure())

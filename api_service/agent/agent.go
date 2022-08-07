@@ -31,6 +31,10 @@ type Config struct {
 	GRPCLibraryClientPort      int
 	GRPCLibraryClientTLSConfig *tls.Config
 
+	GRPCMessageClientAddr      string
+	GRPCMessageClientPort      int
+	GRPCMessageClientTLSConfig *tls.Config
+
 	//DBConfig     adapters.GORMConfig
 	//DBConfig     postgres.Config
 	LoggerConfig applogger.Config

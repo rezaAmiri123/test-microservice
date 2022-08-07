@@ -6,6 +6,7 @@ option go_package="github.com/rezaAmiri123/test-microservice/message_service/pro
 
 service MessageService {
   rpc CreateEmail(CreateEmailRequest) returns (CreateEmailResponse){}
+  rpc GetEmailByUUID(GetEmailByUUIDRequest) returns (GetEmailByUUIDResponse){}
 }
 
 message Email {
@@ -21,4 +22,15 @@ message CreateEmailRequest {
 
 message CreateEmailResponse {
   string UUID = 1;
+}
+
+message GetEmailByUUIDRequest{
+  string UUID = 1;
+}
+
+message GetEmailByUUIDResponse{
+  string Subject = 1;
+  repeated  string To = 2;
+  string From = 3;
+  string Body = 4;
 }

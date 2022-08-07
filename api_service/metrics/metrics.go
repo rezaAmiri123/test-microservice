@@ -17,6 +17,7 @@ type ApiServiceMetric struct {
 	CreateArticleHttpRequests    prometheus.Counter
 	CreateCommentHttpRequests    prometheus.Counter
 	GetArticleBySlugHttpRequests prometheus.Counter
+	GetEmailByUUIDHttpRequests   prometheus.Counter
 	GetArticlesHttpRequests      prometheus.Counter
 	SuccessHttpRequests          prometheus.Counter
 	ErrorHttpRequests            prometheus.Counter
@@ -47,6 +48,10 @@ func NewApiServiceMetric(cfg *Config) *ApiServiceMetric {
 		GetArticlesHttpRequests: promauto.NewCounter(prometheus.CounterOpts{
 			Name: fmt.Sprintf("%s_get_articles_http_requests_total", cfg.ServiceName),
 			Help: "The total of get articles http requests",
+		}),
+		GetEmailByUUIDHttpRequests: promauto.NewCounter(prometheus.CounterOpts{
+			Name: fmt.Sprintf("%s_get_email_by_uuid_http_requests_total", cfg.ServiceName),
+			Help: "The total of get email by uud http requests",
 		}),
 		SuccessHttpRequests: promauto.NewCounter(prometheus.CounterOpts{
 			Name: fmt.Sprintf("%s_success_http_requsts_total", cfg.ServiceName),

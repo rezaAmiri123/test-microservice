@@ -36,6 +36,7 @@ type cfg struct {
 	agent.Config
 	AuthGrpcClientTLSConfig    tls.TLSConfig
 	LibraryGrpcClientTLSConfig tls.TLSConfig
+	MessageGrpcClientTLSConfig tls.TLSConfig
 }
 
 func setupFlags(cmd *cobra.Command) error {
@@ -49,6 +50,8 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().Int("auth-grpc-server-port", 8181, "auth grpc server port.")
 	cmd.Flags().String("library-grpc-server-addr", "library_service", "library grpc server address.")
 	cmd.Flags().Int("library-grpc-server-port", 8281, "library grpc server port.")
+	cmd.Flags().String("message-grpc-server-addr", "message_service", "message grpc server address.")
+	cmd.Flags().Int("message-grpc-server-port", 8481, "message grpc server port.")
 	//cmd.Flags().String("database-type", "pgx", "database type like mysql.")
 	//cmd.Flags().String("database-name", "auth_db", "database name.")
 	//cmd.Flags().String("database-username", "postgres", "database username.")
@@ -72,6 +75,10 @@ func setupFlags(cmd *cobra.Command) error {
 	cmd.Flags().String("library-grpc-client-tls-cert-file", "", "Path to server tls cert.")
 	cmd.Flags().String("library-grpc-client-tls-key-file", "", "Path to server tls key.")
 	cmd.Flags().String("library-grpc-client-tls-ca-file", "", "Path to server certificate authority.")
+
+	cmd.Flags().String("message-grpc-client-tls-cert-file", "", "Path to server tls cert.")
+	cmd.Flags().String("message-grpc-client-tls-key-file", "", "Path to server tls key.")
+	cmd.Flags().String("message-grpc-client-tls-ca-file", "", "Path to server certificate authority.")
 
 	return viper.BindPFlags(cmd.Flags())
 }
@@ -97,6 +104,8 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 	c.cfg.GRPCAuthClientPort = viper.GetInt("auth-grpc-server-port")
 	c.cfg.GRPCLibraryClientAddr = viper.GetString("library-grpc-server-addr")
 	c.cfg.GRPCLibraryClientPort = viper.GetInt("library-grpc-server-port")
+	c.cfg.GRPCMessageClientAddr = viper.GetString("message-grpc-server-addr")
+	c.cfg.GRPCMessageClientPort = viper.GetInt("message-grpc-server-port")
 
 	//c.cfg.GRPCServerAddr = viper.GetString("grpc-server-addr")
 	//c.cfg.GRPCServerPort = viper.GetInt("grpc-server-port")
@@ -142,6 +151,21 @@ func (c *cli) setupConfig(cmd *cobra.Command, args []string) error {
 		c.cfg.LibraryGrpcClientTLSConfig.Server = true
 		c.cfg.Config.GRPCLibraryClientTLSConfig, err = tls.SetupTLSConfig(
 			c.cfg.LibraryGrpcClientTLSConfig,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	c.cfg.MessageGrpcClientTLSConfig.CertFile = viper.GetString("message-grpc-client-tls-cert-file")
+	c.cfg.MessageGrpcClientTLSConfig.KeyFile = viper.GetString("message-grpc-client-tls-key-file")
+	c.cfg.MessageGrpcClientTLSConfig.CAFile = viper.GetString("message-grpc-client-tls-ca-file")
+
+	if c.cfg.MessageGrpcClientTLSConfig.CertFile != "" &&
+		c.cfg.MessageGrpcClientTLSConfig.KeyFile != "" {
+		c.cfg.MessageGrpcClientTLSConfig.Server = true
+		c.cfg.Config.GRPCMessageClientTLSConfig, err = tls.SetupTLSConfig(
+			c.cfg.MessageGrpcClientTLSConfig,
 		)
 		if err != nil {
 			return err
