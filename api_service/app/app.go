@@ -20,4 +20,5 @@ type Queries struct {
 	GetArticleBySlug query.GetArticleBySlugHandler
 	GetArticles      query.GetArticlesHandler
 	GetEmailByUUID   query.GetEmailByUUIDHandler
+	GetEmails        query.GetEmailsHandler
 }

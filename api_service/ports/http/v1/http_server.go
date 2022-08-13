@@ -122,6 +122,7 @@ func NewHttpServer(
 	commentGroup.POST("/create", httpServer.CreateComment(), mw.AuthMiddleware)
 
 	messageGroup := v1.Group("/messages")
+	messageGroup.GET("/email/list", httpServer.GetEmails(), mw.RateLimitMiddleware())
 	messageGroup.GET("/email/:uuid", httpServer.GetEmailByUUID(), mw.AuthMiddleware)
 
 	return e, nil

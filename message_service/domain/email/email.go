@@ -2,10 +2,20 @@ package email
 
 import (
 	"context"
-	"github.com/google/uuid"
-	"github.com/rezaAmiri123/test-microservice/pkg/utils"
 	"time"
+
+	"github.com/google/uuid"
+	messageapi "github.com/rezaAmiri123/test-microservice/message_service/proto/grpc"
+	"github.com/rezaAmiri123/test-microservice/pkg/utils"
 )
+
+type List struct {
+	TotalCount int64 `json:"total_count"`
+	TotalPages int64 `json:"total_pages"`
+	Page       int64 `json:"page"`
+	Size       int64 `json:"size"`
+	HasMore    bool  `json:"has_more"`
+}
 
 type Email struct {
 	UUID      string    `json:"uuid"`
@@ -15,6 +25,11 @@ type Email struct {
 	Body      string    `json:"body" validate:"required"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type EmailList struct {
+	List
+	Emails []*Email
 }
 
 // Validate validates fields of user model
@@ -30,4 +45,13 @@ func (e *Email) SetUUID() error {
 		e.UUID = uuid.New().String()
 	}
 	return nil
+}
+
+func EmailResponseToGrpc(e *Email) *messageapi.Email {
+	res := &messageapi.Email{}
+	res.Subject = e.Subject
+	res.To = e.To
+	res.From = e.From
+	res.Body = e.Body
+	return res
 }

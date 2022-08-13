@@ -8,6 +8,7 @@ import (
 	"github.com/rezaAmiri123/test-microservice/message_service/domain/email"
 	"github.com/rezaAmiri123/test-microservice/pkg/logger"
 	"github.com/rezaAmiri123/test-microservice/pkg/mongodb"
+	"github.com/rezaAmiri123/test-microservice/pkg/pagnation"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -53,6 +54,73 @@ func (p *mongoRepository) GetByUUID(ctx context.Context, uuid string) (*email.Em
 	}
 
 	return &e, nil
+}
+
+func (p *mongoRepository) List(ctx context.Context, query *pagnation.Pagination) (*email.EmailList, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "mongoRepository.List")
+	defer span.Finish()
+
+	//collection := p.db.Database(p.cfg.Mongo.Db).Collection(p.cfg.MongoCollections.Products)
+	//
+	//var e email.Email
+	//if err := p.getCollection().FindOne(ctx, bson.M{"uuid": uuid}).Decode(&e); err != nil {
+	//	p.traceErr(span, err)
+	//	return nil, errors.Wrap(err, "Decode")
+	//}
+	count, err := p.getCollection().CountDocuments(ctx, bson.D{})
+	if err != nil {
+		p.traceErr(span, err)
+		return nil, errors.Wrap(err, "CountDocuments")
+	}
+	if count == 0 {
+		return &email.EmailList{}, nil
+	}
+
+	limit := int64(query.GetLimit())
+	skip := int64(query.GetOffset())
+	cursor, err := p.getCollection().Find(ctx, bson.D{}, &options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+	})
+	if err != nil {
+		p.traceErr(span, err)
+		return nil, errors.Wrap(err, "Find")
+	}
+	defer cursor.Close(ctx) // nolint: errcheck
+
+	emails := make([]*email.Email, 0, query.GetSize())
+
+	for cursor.Next(ctx) {
+		var e email.Email
+		if err := cursor.Decode(&e); err != nil {
+			p.traceErr(span, err)
+			return nil, errors.Wrap(err, "Find")
+		}
+		emails = append(emails, &e)
+	}
+
+	if err := cursor.Err(); err != nil {
+		span.SetTag("error", true)
+		span.LogKV("error_code", err.Error())
+		return nil, errors.Wrap(err, "cursor.Err")
+	}
+	//return models.NewProductListWithPagination(products, count, pagination), nil
+	//res := &article.ArticleList{}
+	//	res.TotalCount = int64(totalCount)
+	//	res.TotalPages = int64(query.GetTotalPages(int(totalCount)))
+	//	res.Page = int64(query.GetPage())
+	//	res.Size = int64(query.GetSize())
+	//	res.HasMore = query.GetHasMore(int(totalCount))
+	//	res.Articles = articles
+	res := &email.EmailList{}
+	res.TotalCount = count
+	res.TotalPages = int64(query.GetTotalPages(int(count)))
+	res.Page = int64(query.GetPage())
+	res.Size = int64(query.GetSize())
+	res.HasMore = query.GetHasMore(int(count))
+	res.Emails = emails
+
+	return res, nil
 }
 
 //func (p *mongoRepository) UpdateProduct(ctx context.Context, product *models.Product) (*models.Product, error) {

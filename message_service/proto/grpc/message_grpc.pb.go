@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type MessageServiceClient interface {
 	CreateEmail(ctx context.Context, in *CreateEmailRequest, opts ...grpc.CallOption) (*CreateEmailResponse, error)
 	GetEmailByUUID(ctx context.Context, in *GetEmailByUUIDRequest, opts ...grpc.CallOption) (*GetEmailByUUIDResponse, error)
+	GetEmails(ctx context.Context, in *GetEmailsRequest, opts ...grpc.CallOption) (*GetEmailsResponse, error)
 }
 
 type messageServiceClient struct {
@@ -48,12 +49,22 @@ func (c *messageServiceClient) GetEmailByUUID(ctx context.Context, in *GetEmailB
 	return out, nil
 }
 
+func (c *messageServiceClient) GetEmails(ctx context.Context, in *GetEmailsRequest, opts ...grpc.CallOption) (*GetEmailsResponse, error) {
+	out := new(GetEmailsResponse)
+	err := c.cc.Invoke(ctx, "/message.MessageService/GetEmails", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessageServiceServer is the server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
 type MessageServiceServer interface {
 	CreateEmail(context.Context, *CreateEmailRequest) (*CreateEmailResponse, error)
 	GetEmailByUUID(context.Context, *GetEmailByUUIDRequest) (*GetEmailByUUIDResponse, error)
+	GetEmails(context.Context, *GetEmailsRequest) (*GetEmailsResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -66,6 +77,9 @@ func (UnimplementedMessageServiceServer) CreateEmail(context.Context, *CreateEma
 }
 func (UnimplementedMessageServiceServer) GetEmailByUUID(context.Context, *GetEmailByUUIDRequest) (*GetEmailByUUIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEmailByUUID not implemented")
+}
+func (UnimplementedMessageServiceServer) GetEmails(context.Context, *GetEmailsRequest) (*GetEmailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEmails not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 
@@ -116,6 +130,24 @@ func _MessageService_GetEmailByUUID_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessageService_GetEmails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEmailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).GetEmails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/message.MessageService/GetEmails",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).GetEmails(ctx, req.(*GetEmailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -130,6 +162,10 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetEmailByUUID",
 			Handler:    _MessageService_GetEmailByUUID_Handler,
+		},
+		{
+			MethodName: "GetEmails",
+			Handler:    _MessageService_GetEmails_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

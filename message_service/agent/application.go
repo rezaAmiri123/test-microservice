@@ -34,6 +34,7 @@ func (a *Agent) setupApplication() error {
 		},
 		Queries: app.Queries{
 			GetEmailByUUID: queries.NewGetEmailHandler(repo),
+			GetEmails:      queries.NewGetEmailsHandler(repo),
 		},
 	}
 	a.Application = application

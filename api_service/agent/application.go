@@ -13,6 +13,7 @@ import (
 
 func (a *Agent) setupApplication() error {
 	producer := kafkaClient.NewProducer(a.logger, a.KafkaConfig.Brokers)
+
 	addr := fmt.Sprintf("%s:%d", a.GRPCLibraryClientAddr, a.GRPCLibraryClientPort)
 	libraryConn, err := a.getGrpcClient(addr, a.GRPCLibraryClientTLSConfig)
 	if err != nil {
@@ -37,6 +38,7 @@ func (a *Agent) setupApplication() error {
 			GetArticleBySlug: query.NewGetArticleBySlugHandler(articleClient, a.logger),
 			GetArticles:      query.NewGetArticlesHandler(articleClient, a.logger),
 			GetEmailByUUID:   query.NewGetEmailByUUIDHandler(messageClient, a.logger),
+			GetEmails:        query.NewGetEmailsHandler(messageClient, a.logger),
 		},
 	}
 	a.Application = application

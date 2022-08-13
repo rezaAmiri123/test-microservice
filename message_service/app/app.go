@@ -12,6 +12,7 @@ type Application struct {
 
 type Queries struct {
 	GetEmailByUUID *queries.GetEmailByUUIDHandler
+	GetEmails      *queries.GetEmailsHandler
 }
 
 type Commands struct {

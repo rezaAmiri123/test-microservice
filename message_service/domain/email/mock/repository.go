@@ -10,6 +10,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	email "github.com/rezaAmiri123/test-microservice/message_service/domain/email"
+	pagnation "github.com/rezaAmiri123/test-microservice/pkg/pagnation"
 )
 
 // MockRepository is a mock of Repository interface.
@@ -62,4 +63,19 @@ func (m *MockRepository) GetByUUID(ctx context.Context, uuid string) (*email.Ema
 func (mr *MockRepositoryMockRecorder) GetByUUID(ctx, uuid interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUUID", reflect.TypeOf((*MockRepository)(nil).GetByUUID), ctx, uuid)
+}
+
+// List mocks base method.
+func (m *MockRepository) List(ctx context.Context, query *pagnation.Pagination) (*email.EmailList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", ctx, query)
+	ret0, _ := ret[0].(*email.EmailList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockRepositoryMockRecorder) List(ctx, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRepository)(nil).List), ctx, query)
 }
