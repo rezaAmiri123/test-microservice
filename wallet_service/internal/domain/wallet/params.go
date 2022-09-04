@@ -4,9 +4,9 @@ import "github.com/google/uuid"
 
 // TransferTxParams contains the input parameters of the transfer transaction
 type TransferTxParams struct {
-	FromWalletID int64 `json:"from_wallet_id"`
-	ToWalletID   int64 `json:"to_wallet_id"`
-	Amount       int64 `json:"amount"`
+	FromWalletID uuid.UUID `json:"from_wallet_id"`
+	ToWalletID   uuid.UUID `json:"to_wallet_id"`
+	Amount       int64     `json:"amount"`
 }
 
 // TransferTxResult is the result of the transfer transaction
@@ -57,8 +57,8 @@ type CreateTransferParams struct {
 	Amount       int64     `json:"amount"`
 }
 type ListTransfersParams struct {
-	FromWalletID int64 `json:"from_wallet_id"`
-	ToWalletID   int64 `json:"to_wallet_id"`
-	Limit        int32 `json:"limit"`
-	Offset       int32 `json:"offset"`
+	FromWalletID uuid.UUID `json:"from_wallet_id"`
+	ToWalletID   uuid.UUID `json:"to_wallet_id"`
+	Limit        int32     `json:"limit"`
+	Offset       int32     `json:"offset"`
 }
