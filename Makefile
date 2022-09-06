@@ -81,6 +81,13 @@ library_service_proto:
 		--go-grpc_out=library_service/proto/grpc --go-grpc_opt=paths=source_relative \
 		--proto_path=library_service/proto/grpc library_service/proto/grpc/library.proto
 
+wallet_service_proto:
+	protoc \
+		--go_out=wallet_service/proto/grpc --go_opt=paths=source_relative \
+		--go-grpc_out=wallet_service/proto/grpc --go-grpc_opt=paths=source_relative \
+		--grpc-gateway_out=wallet_service/proto/grpc --grpc-gateway_opt=paths=source_relative \
+        --openapiv2_out=docs/swagger --openapiv2_opt=allow_merge=true,merge_file_name=wallet_service \
+		--proto_path=wallet_service/proto/grpc wallet_service/proto/grpc/*.proto
 # ==============================================================================
 # Go migrate postgresql
 

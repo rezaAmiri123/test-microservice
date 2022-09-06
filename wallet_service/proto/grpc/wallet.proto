@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package pb;
+
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/rezaAmiri123/test-microservice/wallet_service/proto/grpc";
+
+message Wallet {
+    bytes wallet_id = 1;
+    string owner = 2;
+    int64 balance = 3;
+    string currency = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+
+message CreateWalletRequest {
+    string owner = 1;
+    int64 balance = 2;
+    string currency = 3;
+}
+
+message CreateWalletResponse {
+    Wallet wallet = 1;
+}
+

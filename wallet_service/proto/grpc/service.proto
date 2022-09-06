@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "wallet.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/rezaAmiri123/test-microservice/wallet_service/proto/grpc";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+            title: "Wallet service API";
+            version: "1.1";
+            contact: {
+                    name: "Wallet service";
+                    url: "https://github.com/rezaAmiri123";
+                    email: "xxxxxxx@gmail.com";
+            };
+    };
+};
+
+
+service WalletService {
+    rpc CreateUser (CreateWalletRequest) returns (CreateWalletResponse) {
+        option (google.api.http) = {
+            post: "/v1/create_wallet"
+            body: "*"
+        };
+                option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+                        description: "Use this API to create a new wallet";
+                        summary: "Create new wallet";
+        };
+    }
+}

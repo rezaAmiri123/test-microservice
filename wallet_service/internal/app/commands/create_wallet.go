@@ -3,7 +3,6 @@ package commands
 import (
 	"context"
 
-	"github.com/gosimple/slug"
 	"github.com/opentracing/opentracing-go"
 	"github.com/rezaAmiri123/test-microservice/wallet_service/internal/domain/wallet"
 )
@@ -19,7 +18,7 @@ func NewCreateArticleHandler(repo wallet.Repository) *CreateWalletHandler {
 	return &CreateWalletHandler{repo: repo}
 }
 
-func (h CreateWalletHandler) Handle(ctx context.Context, currency, owner string) (wallet.Wallet, error) {
+func (h CreateWalletHandler) Handle(ctx context.Context, currency, owner string) (*wallet.Wallet, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "CreateWalletHandler.Handle")
 	defer span.Finish()
 
@@ -29,6 +28,6 @@ func (h CreateWalletHandler) Handle(ctx context.Context, currency, owner string)
 		Balance:  0,
 	}
 
-	wall, err := h.repo.CreateWallet(ctx, arg)
-	return wall, err
+	res, err := h.repo.CreateWallet(ctx, arg)
+	return &res, err
 }
