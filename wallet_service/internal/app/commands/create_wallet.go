@@ -11,7 +11,7 @@ type CreateWalletHandler struct {
 	repo wallet.Repository
 }
 
-func NewCreateArticleHandler(repo wallet.Repository) *CreateWalletHandler {
+func NewCreateWalletHandler(repo wallet.Repository) *CreateWalletHandler {
 	if repo == nil {
 		panic("repo is nil")
 	}

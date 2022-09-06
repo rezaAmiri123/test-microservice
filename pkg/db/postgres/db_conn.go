@@ -15,12 +15,12 @@ const (
 )
 
 type Config struct {
-	Driver   string
-	Host     string
-	Port     string
-	User     string
-	DBName   string
-	Password string
+	Driver   string `mapstructure:"POSTGRES_DRIVER"`
+	Host     string `mapstructure:"POSTGRES_HOST"`
+	Port     string `mapstructure:"POSTGRES_PORT"`
+	User     string `mapstructure:"POSTGRES_USER"`
+	DBName   string `mapstructure:"POSTGRES_DB_NAME"`
+	Password string `mapstructure:"POSTGRES_PASSWORD"`
 }
 
 // Return new Postgresql db instance

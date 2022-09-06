@@ -11,15 +11,15 @@ type Config struct {
 	ServiceHostPort string `mapstructure:"METRIC_SERVICE_HOST_PORT"`
 }
 
-type MessageServiceMetric struct {
+type WalletServiceMetric struct {
 	//CreateArticleHttpRequests  prometheus.Counter
 	//CreateArticleKafkaRequests prometheus.Counter
 	SuccessKafkaMessages prometheus.Counter
 	ErrorKafkaMessages   prometheus.Counter
 }
 
-func NewMessageServiceMetric(cfg *Config) *MessageServiceMetric {
-	return &MessageServiceMetric{
+func NewWalletServiceMetric(cfg *Config) *WalletServiceMetric {
+	return &WalletServiceMetric{
 		//CreateArticleHttpRequests: promauto.NewCounter(prometheus.CounterOpts{
 		//	Name: fmt.Sprintf("%s_create_article_http_requests_total", cfg.ServiceName),
 		//	Help: "The total of create article requests",

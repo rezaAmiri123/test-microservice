@@ -9,9 +9,9 @@ import (
 )
 
 type Config struct {
-	LogLevel string `mapstructure:"level"`
-	DevMode  bool   `mapstructure:"devMode"`
-	Encoder  string `mapstructure:"encoder"`
+	LogLevel string `mapstructure:"LOG_LEVEL"`
+	DevMode  bool   `mapstructure:"LOG_DEV_MOD"`
+	Encoder  string `mapstructure:"LOG_ENCODER"`
 }
 
 func NewLoggerConfig(logLevel string, devMode bool, encoder string) *Config {
