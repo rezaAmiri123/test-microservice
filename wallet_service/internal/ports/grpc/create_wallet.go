@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *WalletGRPCServer) CreateUser(ctx context.Context, req *walletservice.CreateWalletRequest) (*walletservice.CreateWalletResponse, error) {
+func (s *WalletGRPCServer) CreateWallet(ctx context.Context, req *walletservice.CreateWalletRequest) (*walletservice.CreateWalletResponse, error) {
 	//s.cfg.Metric.GetArticleBySlugGrpcRequests.Inc()
 
 	span, ctx := opentracing.StartSpanFromContext(ctx, "MessageGRPCServer.CreateEmail")
@@ -19,5 +19,8 @@ func (s *WalletGRPCServer) CreateUser(ctx context.Context, req *walletservice.Cr
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
-	return &walletservice.CreateWalletResponse{Wallet: wallet}, nil
+	res := &walletservice.CreateWalletResponse{
+		Wallet: WalletResponseToGrpc(wallet),
+	}
+	return res, nil
 }

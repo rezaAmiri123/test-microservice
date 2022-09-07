@@ -22,7 +22,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 
 service WalletService {
-    rpc CreateUser (CreateWalletRequest) returns (CreateWalletResponse) {
+    rpc CreateWallet (CreateWalletRequest) returns (CreateWalletResponse) {
         option (google.api.http) = {
             post: "/v1/create_wallet"
             body: "*"

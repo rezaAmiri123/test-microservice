@@ -25,7 +25,7 @@
       "post": {
         "summary": "Create new wallet",
         "description": "Use this API to create a new wallet",
-        "operationId": "WalletService_CreateUser",
+        "operationId": "WalletService_CreateWallet",
         "responses": {
           "200": {
             "description": "A successful response.",
