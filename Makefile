@@ -123,3 +123,6 @@ swagger:
 	echo "Starting swagger generating"
 	#swag init -g api_service/ports/http/**/*.go
 	swag init -g **/**/*.go  --parseDependency
+
+evans_wallet:
+	evans --host localhost --port 8581 -r repl
